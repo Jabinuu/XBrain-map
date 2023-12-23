@@ -1,21 +1,29 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { drawRect } from '~/rect'
+import BrainMap from '^/index'
+import dataSource from '~/example'
 
 onMounted(() => {
-  const drawing = document.getElementById('drawing')
-  if (drawing)
-    drawRect(drawing)
+  const brainMapContainer = document.getElementById('brainMapContainer')
+
+  if (brainMapContainer !== null) {
+    new BrainMap({
+      el: brainMapContainer,
+      dataSource
+    })
+  }
+  
 })
 </script>
 
 <template>
-  <div id="drawing" />
+  <div id="brainMapContainer" />
 </template>
 
 <style scoped>
-#drawing{
-  width: 200px;
-  height: 200px;
+#brainMapContainer {
+  width: 100vw;
+  height: 100vh;
+  background-color: skyblue;
 }
 </style>

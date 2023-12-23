@@ -8,7 +8,8 @@
     "moduleResolution": "bundler",
     "paths": {
       "@/*": ["src/*"],
-      "~/*": ["D:/JaBinsProjects/brain-map-root/brain-map/src/*"]
+      "~/*": ["D:/JaBinsProjects/brain-map-root/brain-map/src/*"],
+      "^/*": ["D:/JaBinsProjects/brain-map-root/brain-map/*"]
     },
     "resolveJsonModule": true,
     "types": [
@@ -21,7 +22,8 @@
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "outDir": "dist"
   },
   "exclude": ["dist", "node_modules", "eslint.config.js"]
 }
