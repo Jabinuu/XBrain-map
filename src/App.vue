@@ -3,9 +3,9 @@ import { onMounted } from 'vue'
 import BrainMap from '^/index'
 import dataSource from '~/example'
 
-onMounted(() => {
+onMounted(async () => {
   const brainMapContainer = document.getElementById('brainMapContainer')
-
+  await BrainMap.usePlugin('Select')
   if (brainMapContainer !== null) {
     new BrainMap({
       el: brainMapContainer,
