@@ -9,7 +9,8 @@ onMounted(async () => {
   if (brainMapContainer !== null) {
     new BrainMap({
       el: brainMapContainer,
-      dataSource
+      dataSource,
+      theme:'classic'
     })
   }
   
