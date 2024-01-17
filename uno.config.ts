@@ -26,4 +26,7 @@ export default defineConfig({
       },
     }),
   ],
+  rules: [
+    ['fs-0.9', { 'font-size': '0.9em' }],
+  ]
 })

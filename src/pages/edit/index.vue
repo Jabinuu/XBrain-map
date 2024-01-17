@@ -4,23 +4,22 @@ import BrainMap from '^/index'
 import dataSource from '~/example'
 import ToolbarTopLeft from './components/global/ToolbarTopLeft.vue';
 import ToolbarTopRight from './components/global/ToolbarTopRight.vue';
-import GroupPromote from './components/global/GroupPromote.vue';
+import GroupPrompt from './components/global/GroupPrompt.vue';
 
-onMounted(async () => {  
-  
+onMounted(async () => {
   const brainMapContainer = document.getElementById('brainMapContainer')
   await BrainMap.usePlugin('Select')
   if (brainMapContainer !== null) {
     new BrainMap({
       el: brainMapContainer,
       dataSource,
-      theme:'classic',
-      themeConfig:{
-        lineStyle:'curve',
+      theme: 'classic',
+      themeConfig: {
+        lineStyle: 'curve',
       }
     })
   }
-  
+
 })
 </script>
 
@@ -29,19 +28,20 @@ onMounted(async () => {
     <ToolbarTopLeft></ToolbarTopLeft>
     <ToolbarTopRight></ToolbarTopRight>
   </div>
-  <div class="group-promote">
-    <GroupPromote></GroupPromote>
-  </div>
-  <div id="brainMapContainer" />
 
+  <div class="group-prompt">
+    <GroupPrompt></GroupPrompt>
+  </div>
+
+  <div id="brainMapContainer" />
 </template>
 
 <style lang="less" scoped>
-
 #brainMapContainer {
   width: 100vw;
   height: 100vh;
 }
+
 .toolbar-top {
   z-index: 1;
   position: absolute;
@@ -52,10 +52,16 @@ onMounted(async () => {
   padding-left: 20px;
   padding-right: 20px;
 }
-.group-promote{
+
+.group-prompt {
   position: fixed;
   right: 20px;
   bottom: 50px;
 }
 
+:deep(.icon) {
+  width: 18px;
+  height: 18px;
+  color: #262626;
+}
 </style>

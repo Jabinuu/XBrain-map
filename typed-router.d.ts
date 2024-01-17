@@ -40,7 +40,7 @@ import type {
 declare module 'vue-router/auto/routes' {
   export interface RouteNamedMap {
     '/edit/': RouteRecordInfo<'/edit/', '/edit', Record<never, never>, Record<never, never>>,
-    '/edit/components/global/GroupPromote': RouteRecordInfo<'/edit/components/global/GroupPromote', '/edit/components/global/GroupPromote', Record<never, never>, Record<never, never>>,
+    '/edit/components/global/GroupPrompt': RouteRecordInfo<'/edit/components/global/GroupPrompt', '/edit/components/global/GroupPrompt', Record<never, never>, Record<never, never>>,
     '/edit/components/global/ToolbarSettings': RouteRecordInfo<'/edit/components/global/ToolbarSettings', '/edit/components/global/ToolbarSettings', Record<never, never>, Record<never, never>>,
     '/edit/components/global/ToolbarTheme': RouteRecordInfo<'/edit/components/global/ToolbarTheme', '/edit/components/global/ToolbarTheme', Record<never, never>, Record<never, never>>,
     '/edit/components/global/ToolbarTopLeft': RouteRecordInfo<'/edit/components/global/ToolbarTopLeft', '/edit/components/global/ToolbarTopLeft', Record<never, never>, Record<never, never>>,
