@@ -28,5 +28,9 @@ export default defineConfig({
   ],
   rules: [
     ['fs-0.9', { 'font-size': '0.9em' }],
+    ['icon-black', { 'color': '#262626' }],
+    ['bg-white', { 'background-color': '#fff' }],
+    ['rd-8', { 'border-radius': '8px' }],
+    ['round', { 'border-radius': '50%' }]
   ]
 })

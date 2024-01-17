@@ -6,7 +6,7 @@
   <a-tooltip mini background-color="rgba(0,0,0,0.7)" :arrow-style="{ width: 0 }">
     <a-button type="text">
       <template #icon>
-        <slot name="btnContent"></slot>
+        <slot name="icon"></slot>
       </template>
 
     </a-button>

@@ -38,6 +38,7 @@ onMounted(async () => {
 
 <style lang="less" scoped>
 #brainMapContainer {
+  position: relative;
   width: 100vw;
   height: 100vh;
 }
@@ -45,15 +46,16 @@ onMounted(async () => {
 .toolbar-top {
   z-index: 1;
   position: absolute;
-  top: 10px;
+  top: 14px;
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .group-prompt {
+  z-index: 1;
   position: fixed;
   right: 20px;
   bottom: 50px;
@@ -63,5 +65,10 @@ onMounted(async () => {
   width: 18px;
   height: 18px;
   color: #262626;
+}
+
+:deep(.toolbar-border-shadow) {
+  border: 1px solid rgba(239, 240, 240, 0.9);
+  box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.08), 0 2px 6px 0 rgba(0, 0, 0, 0.04), 0 4px 8px 1px rgba(0, 0, 0, 0.02)
 }
 </style>
