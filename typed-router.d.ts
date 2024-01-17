@@ -39,6 +39,16 @@ import type {
 
 declare module 'vue-router/auto/routes' {
   export interface RouteNamedMap {
+    '/edit/': RouteRecordInfo<'/edit/', '/edit', Record<never, never>, Record<never, never>>,
+    '/edit/components/global/GroupPromote': RouteRecordInfo<'/edit/components/global/GroupPromote', '/edit/components/global/GroupPromote', Record<never, never>, Record<never, never>>,
+    '/edit/components/global/ToolbarSettings': RouteRecordInfo<'/edit/components/global/ToolbarSettings', '/edit/components/global/ToolbarSettings', Record<never, never>, Record<never, never>>,
+    '/edit/components/global/ToolbarTheme': RouteRecordInfo<'/edit/components/global/ToolbarTheme', '/edit/components/global/ToolbarTheme', Record<never, never>, Record<never, never>>,
+    '/edit/components/global/ToolbarTopLeft': RouteRecordInfo<'/edit/components/global/ToolbarTopLeft', '/edit/components/global/ToolbarTopLeft', Record<never, never>, Record<never, never>>,
+    '/edit/components/global/ToolbarTopRight': RouteRecordInfo<'/edit/components/global/ToolbarTopRight', '/edit/components/global/ToolbarTopRight', Record<never, never>, Record<never, never>>,
+    '/edit/components/global/ToolbarView': RouteRecordInfo<'/edit/components/global/ToolbarView', '/edit/components/global/ToolbarView', Record<never, never>, Record<never, never>>,
+    '/edit/components/node/NodeToolbar': RouteRecordInfo<'/edit/components/node/NodeToolbar', '/edit/components/node/NodeToolbar', Record<never, never>, Record<never, never>>,
+    '/edit/components/sidebar/Sidebar': RouteRecordInfo<'/edit/components/sidebar/Sidebar', '/edit/components/sidebar/Sidebar', Record<never, never>, Record<never, never>>,
+    '/home/': RouteRecordInfo<'/home/', '/home', Record<never, never>, Record<never, never>>,
   }
 }
 

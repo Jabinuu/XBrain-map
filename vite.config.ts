@@ -9,6 +9,7 @@ import UnoCSS from 'unocss/vite'
 import VueMacros from 'unplugin-vue-macros/vite'
 import VueRouter from 'unplugin-vue-router/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
+import { ArcoResolver } from 'unplugin-vue-components/resolvers';
 
 export default defineConfig({
   resolve: {
@@ -46,6 +47,7 @@ export default defineConfig({
           'vue-router/auto': ['useLink'],
         },
       ],
+      resolvers:[ArcoResolver()],
       dts: true,
       dirs: [
         './src/composables',
@@ -55,6 +57,11 @@ export default defineConfig({
 
     // https://github.com/antfu/vite-plugin-components
     Components({
+      resolvers:[
+        ArcoResolver({
+          sideEffect:true
+        })
+      ],
       dts: true,
     }),
 
