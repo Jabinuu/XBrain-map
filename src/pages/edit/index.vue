@@ -5,12 +5,21 @@ import dataSource from '~/example'
 import ToolbarTopLeft from './components/global/ToolbarTopLeft.vue';
 import ToolbarTopRight from './components/global/ToolbarTopRight.vue';
 import GroupPrompt from './components/global/GroupPrompt.vue';
+import NodeToolbar from './components/node/NodeToolbar.vue';
+import Node from '^/src/node/Node';
+
+let brainMap: BrainMap
+
+let showNodeToolbar = ref(false)
+
+
 
 onMounted(async () => {
   const brainMapContainer = document.getElementById('brainMapContainer')
+
   await BrainMap.usePlugin('Select')
   if (brainMapContainer !== null) {
-    new BrainMap({
+    brainMap = new BrainMap({
       el: brainMapContainer,
       dataSource,
       theme: 'classic',
@@ -20,20 +29,40 @@ onMounted(async () => {
     })
   }
 
+  brainMap?.on('node_active', (e) => {
+    showNodeToolbar.value = true
+    nextTick(() => {
+      const node: Node = e[0]
+      const _nodeToolbar = document.getElementById('node-toolbar-wrap')
+
+      if (_nodeToolbar) {
+        const toolbarWidth = _nodeToolbar.clientWidth
+        const toolbarHeight = _nodeToolbar.clientHeight
+        _nodeToolbar.style.left = (node.left - (Math.abs(node.width - toolbarWidth) / 2)) + 'px'
+        _nodeToolbar.style.top = (node.top - toolbarHeight) + 'px'
+      }
+    })
+  })
+
+  brainMap.on('clear_active', () => {
+    showNodeToolbar.value = false
+  })
 })
 </script>
 
 <template>
   <div class="toolbar-top">
-    <ToolbarTopLeft></ToolbarTopLeft>
-    <ToolbarTopRight></ToolbarTopRight>
+    <toolbar-top-left></toolbar-top-left>
+
+    <toolbar-top-right></toolbar-top-right>
   </div>
 
   <div class="group-prompt">
-    <GroupPrompt></GroupPrompt>
+    <group-prompt></group-prompt>
   </div>
 
   <div id="brainMapContainer" />
+  <node-toolbar v-show="showNodeToolbar"></node-toolbar>
 </template>
 
 <style lang="less" scoped>

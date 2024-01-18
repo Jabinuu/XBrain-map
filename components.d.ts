@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AButton: typeof import('@arco-design/web-vue')['Button']
+    ACard: typeof import('@arco-design/web-vue')['Card']
     ACheckbox: typeof import('@arco-design/web-vue')['Checkbox']
     ACollapse: typeof import('@arco-design/web-vue')['Collapse']
     ACollapseItem: typeof import('@arco-design/web-vue')['CollapseItem']
@@ -17,6 +18,7 @@ declare module 'vue' {
     ADropdown: typeof import('@arco-design/web-vue')['Dropdown']
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber']
     AOption: typeof import('@arco-design/web-vue')['Option']
+    APopover: typeof import('@arco-design/web-vue')['Popover']
     ARadio: typeof import('@arco-design/web-vue')['Radio']
     ARadioGroup: typeof import('@arco-design/web-vue')['RadioGroup']
     ASelect: typeof import('@arco-design/web-vue')['Select']
@@ -24,6 +26,7 @@ declare module 'vue' {
     ATabPane: typeof import('@arco-design/web-vue')['TabPane']
     ATabs: typeof import('@arco-design/web-vue')['Tabs']
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip']
+    ATooptip: typeof import('@arco-design/web-vue')['Tooptip']
     IconBtn: typeof import('./src/components/IconBtn.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
