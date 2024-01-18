@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import IconBtn from '@/components/IconBtn.vue';
 import { IconBrush, IconSettings } from '@arco-design/web-vue/es/icon';
+import Sidebar from '../sidebar/Sidebar.vue';
+import { ref } from 'vue';
+
+const showSidebar = ref(false)
 
 </script>
 
@@ -16,7 +20,7 @@ import { IconBrush, IconSettings } from '@arco-design/web-vue/es/icon';
         </template>
       </icon-btn>
 
-      <icon-btn>
+      <icon-btn @click="showSidebar = !showSidebar">
         <template #icon>
           <icon-settings class="w4 h4 icon-black" />
         </template>
@@ -26,6 +30,7 @@ import { IconBrush, IconSettings } from '@arco-design/web-vue/es/icon';
       </icon-btn>
     </a-space>
   </div>
+  <Sidebar :isVisible="showSidebar" @visibleChange="showSidebar = false"></Sidebar>
 </template>
 
 <style lang="less" scoped></style>

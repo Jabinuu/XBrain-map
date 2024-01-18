@@ -31,8 +31,8 @@ const viewScale = ['20%', '50%', '75%', '100%', '150%', '200%', '300%', '400%']
 
     <a-divider direction="vertical" :margin="8"></a-divider>
 
-    <div>
-      <icon-btn>
+    <div class="group-scale">
+      <icon-btn :has-tooltip="false">
         <template #icon>
           <icon-minus class="w3.5 h3.5 icon-black" />
         </template>
@@ -48,7 +48,7 @@ const viewScale = ['20%', '50%', '75%', '100%', '150%', '200%', '300%', '400%']
         </template>
       </a-dropdown>
 
-      <icon-btn>
+      <icon-btn :has-tooltip="false">
         <template #icon>
           <icon-plus class="w3.5 h3.5 icon-black" />
         </template>
@@ -70,5 +70,10 @@ const viewScale = ['20%', '50%', '75%', '100%', '150%', '200%', '300%', '400%']
 .scale-btn:active {
   color: #262626;
   background-color: #fff;
+}
+
+:deep(.group-scale .arco-btn-text:hover) {
+  background-color: #fff;
+
 }
 </style>
