@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { IconBold, IconItalic, IconStrikethrough, IconUnderline, IconAlignLeft, IconAlignCenter, IconAlignRight, IconMenu } from '@arco-design/web-vue/es/icon';
+import bus from '@/utils/bus'
+
 defineProps<{
   isVisible?: boolean
 }>()
 
-const emit = defineEmits(['visibleChange'])
 const customStyle = {
   borderRadius: '6px',
   marginBottom: '12px',
@@ -48,18 +49,22 @@ const fontSizeList = [{
 }]
 
 const fontSize = ref(14)
+
 const handleCancel = () => {
-  emit('visibleChange', false)
+  bus.emit('visibleChange', false)
 };
 
 
 </script>
 
 <template>
-  <a-drawer :width="340" :visible="isVisible" unmountOnClose @cancel="handleCancel" :mask="false" :footer="false">
-    <template #title>设置</template>
-
-    <a-tabs default-active-key="1" :header-padding="false">
+  <div class="w70  bg-white">
+    <div class="flex justify-between mt flex-items-center pl pb2 border-b-1">
+      <span class="font-size-4">设置</span>
+      <div class="w4 h4 cancel-btn mr4" @click="handleCancel">
+      </div>
+    </div>
+    <a-tabs default-active-key="1">
       <a-tab-pane key="1" title="节点">
         <a-collapse :default-active-key="[1, 2, 3]" :bordered="false">
           <a-collapse-item header="布局" :style="customStyle" :key="1">
@@ -202,7 +207,8 @@ const handleCancel = () => {
         </a-collapse>
       </a-tab-pane>
     </a-tabs>
-  </a-drawer>
+
+  </div>
 </template>
 
 <style lang="less" scoped>
@@ -235,5 +241,14 @@ const handleCancel = () => {
 .arco-radio-button {
   flex: auto;
   text-align: center;
+}
+
+.cancel-btn {
+  background-image: url(https://gw.alipayobjects.com/zos/bmw-prod/3a5cc682-0502-44f1-80cf-4a8de2d89e1e.svg);
+}
+
+:deep(.arco-tabs-content) {
+  height: calc(100vh - 90px);
+  overflow: auto;
 }
 </style>

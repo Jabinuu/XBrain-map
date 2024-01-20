@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import IconBtn from '@/components/IconBtn.vue';
 import { IconBrush, IconSettings } from '@arco-design/web-vue/es/icon';
-import Sidebar from '../sidebar/Sidebar.vue';
-import { ref } from 'vue';
+import bus from '@/utils/bus';
 
-const showSidebar = ref(false)
+function onlickSettings() {
+  bus.emit('visibleChange', true)
+}
 
 </script>
 
@@ -20,7 +21,7 @@ const showSidebar = ref(false)
         </template>
       </icon-btn>
 
-      <icon-btn @click="showSidebar = !showSidebar">
+      <icon-btn @click="onlickSettings">
         <template #icon>
           <icon-settings class="w4 h4 icon-black" />
         </template>
@@ -30,7 +31,6 @@ const showSidebar = ref(false)
       </icon-btn>
     </a-space>
   </div>
-  <Sidebar :isVisible="showSidebar" @visibleChange="showSidebar = false"></Sidebar>
 </template>
 
 <style lang="less" scoped></style>

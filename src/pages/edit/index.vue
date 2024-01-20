@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import BrainMap from '^/index'
 import dataSource from '~/example'
 import ToolbarTopLeft from './components/global/ToolbarTopLeft.vue';
@@ -8,15 +8,36 @@ import GroupPrompt from './components/global/GroupPrompt.vue';
 import NodeToolbar from './components/node/NodeToolbar.vue';
 import Node from '^/src/node/Node';
 import bus from '@/utils/bus';
+import Sidebar from './components/sidebar/Sidebar.vue';
 
 let brainMap: BrainMap
 
 let showNodeToolbar = ref(false)
 const brainMapContainer = ref()
+const mainContainer = ref()
 const eventList = ['node_active', 'clear_active']
+const showSidebar = ref(false)
 
 onMounted(() => {
   init()
+  bus.on('visibleChange', (e: any) => {
+    if (!e) {
+      brainMapContainer.value.style.marginRight = 0
+      mainContainer.value.style.width = '100vw'
+      brainMapContainer.value.style.width = '100%'
+      if (brainMap.svg) {
+        brainMap.svg.css('width', '100%')
+      }
+    } else {
+      mainContainer.value.style.marginRight = 280 + 'px'
+      mainContainer.value.style.width = 'calc(100vw - 280px)'
+      brainMapContainer.value.style.width = 'calc(100vw - 280px)'
+      if (brainMap.svg) {
+        brainMap.svg.css('width', '100%')
+      }
+    }
+    showSidebar.value = e
+  })
 })
 
 // 初始化编辑层
@@ -58,27 +79,37 @@ async function init() {
   bus.on('clear_active', () => {
     showNodeToolbar.value = false
   })
+
 }
+
+
 
 
 </script>
 
 <template>
-  <div class="toolbar-top">
-    <toolbar-top-left></toolbar-top-left>
+  <div class="absolute left-0 mr70" ref="mainContainer">
+    <div class="toolbar-top">
+      <toolbar-top-left></toolbar-top-left>
+      <toolbar-top-right></toolbar-top-right>
+    </div>
 
-    <toolbar-top-right></toolbar-top-right>
+    <div class="group-prompt">
+      <group-prompt></group-prompt>
+    </div>
+
+    <div id="brainMapContainer" ref="brainMapContainer" />
+    <node-toolbar v-show="showNodeToolbar"></node-toolbar>
   </div>
-
-  <div class="group-prompt">
-    <group-prompt></group-prompt>
-  </div>
-
-  <div id="brainMapContainer" ref="brainMapContainer" />
-  <node-toolbar v-show="showNodeToolbar"></node-toolbar>
+  <Sidebar v-show="showSidebar" class="absolute right-0 ">
+  </Sidebar>
 </template>
 
 <style lang="less" scoped>
+.contariner {
+  overflow: hidden;
+}
+
 #brainMapContainer {
   position: relative;
   width: 100vw;
