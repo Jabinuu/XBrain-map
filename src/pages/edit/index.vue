@@ -7,20 +7,24 @@ import ToolbarTopRight from './components/global/ToolbarTopRight.vue';
 import GroupPrompt from './components/global/GroupPrompt.vue';
 import NodeToolbar from './components/node/NodeToolbar.vue';
 import Node from '^/src/node/Node';
+import bus from '@/utils/bus';
 
 let brainMap: BrainMap
 
 let showNodeToolbar = ref(false)
+const brainMapContainer = ref()
+const eventList = ['node_active', 'clear_active']
 
+onMounted(() => {
+  init()
+})
 
-
-onMounted(async () => {
-  const brainMapContainer = document.getElementById('brainMapContainer')
-
+// 初始化编辑层
+async function init() {
   await BrainMap.usePlugin('Select')
-  if (brainMapContainer !== null) {
+  if (brainMapContainer.value !== null) {
     brainMap = new BrainMap({
-      el: brainMapContainer,
+      el: brainMapContainer.value,
       dataSource,
       theme: 'classic',
       themeConfig: {
@@ -29,7 +33,14 @@ onMounted(async () => {
     })
   }
 
-  brainMap?.on('node_active', (e) => {
+  // 转发事件
+  eventList.forEach((item) => {
+    brainMap.on(item, (args) => {
+      bus.emit(item, args)
+    })
+  })
+
+  bus?.on('node_active', (e: any) => {
     showNodeToolbar.value = true
     nextTick(() => {
       const node: Node = e[0]
@@ -44,10 +55,12 @@ onMounted(async () => {
     })
   })
 
-  brainMap.on('clear_active', () => {
+  bus.on('clear_active', () => {
     showNodeToolbar.value = false
   })
-})
+}
+
+
 </script>
 
 <template>
@@ -61,7 +74,7 @@ onMounted(async () => {
     <group-prompt></group-prompt>
   </div>
 
-  <div id="brainMapContainer" />
+  <div id="brainMapContainer" ref="brainMapContainer" />
   <node-toolbar v-show="showNodeToolbar"></node-toolbar>
 </template>
 
