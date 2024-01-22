@@ -1,8 +1,14 @@
 <script setup lang="ts">
 
 import { IconUnorderedList, IconTags, IconAttachment, IconSettings } from '@arco-design/web-vue/es/icon';
+import bus from '@/utils/bus';
 
+const hasTooltip = ref<boolean | undefined>(undefined)
 
+function onClickSettingBtn() {
+  hasTooltip.value = false
+  bus.emit('sidebarVisibleChange', true)
+}
 </script>
 
 <template>
@@ -108,7 +114,7 @@ import { IconUnorderedList, IconTags, IconAttachment, IconSettings } from '@arco
 
         <a-divider direction="vertical" class="ml1 mr1 h5"></a-divider>
 
-        <icon-btn>
+        <icon-btn @click="onClickSettingBtn" :has-tooltip="hasTooltip">
           <template #icon>
             <icon-settings class="w4.5 h4.5 icon-black" />
           </template>

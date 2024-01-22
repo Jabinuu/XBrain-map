@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { IconBold, IconItalic, IconStrikethrough, IconUnderline, IconAlignLeft, IconAlignCenter, IconAlignRight, IconMenu } from '@arco-design/web-vue/es/icon';
 import bus from '@/utils/bus'
+import LayoutSelect from './LayoutSelect.vue'
+import ShapeSelect from './ShapeSelect.vue';
 
 defineProps<{
   isVisible?: boolean
@@ -51,14 +53,13 @@ const fontSizeList = [{
 const fontSize = ref(14)
 
 const handleCancel = () => {
-  bus.emit('visibleChange', false)
+  bus.emit('sidebarVisibleChange', false)
 };
-
 
 </script>
 
 <template>
-  <div class="w70  bg-white">
+  <div class="w70  bg-white sidebar-shadow">
     <div class="flex justify-between mt flex-items-center pl pb2 border-b-1">
       <span class="font-size-4">设置</span>
       <div class="w4 h4 cancel-btn mr4" @click="handleCancel">
@@ -68,16 +69,16 @@ const handleCancel = () => {
       <a-tab-pane key="1" title="节点">
         <a-collapse :default-active-key="[1, 2, 3]" :bordered="false">
           <a-collapse-item header="布局" :style="customStyle" :key="1">
-            <div class="flex justify-between flex-item-center">
+            <div class="flex justify-between flex-items-center">
               <span>结构</span>
-              <div class="w22 h8 rd border current-layout"></div>
+              <layout-select></layout-select>
             </div>
           </a-collapse-item>
           <a-collapse-item header="节点" :style="customStyle" :key="2">
             <div>
               <div class="flex justify-between flex-items-center mb">
                 <span>节点形状</span>
-                <div class="w22 h8  rd border current-node-shape"></div>
+                <shape-select></shape-select>
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>填充颜色</span>
@@ -212,19 +213,11 @@ const handleCancel = () => {
 </template>
 
 <style lang="less" scoped>
-.current-layout {
-  background-image: url(https://gw.alipayobjects.com/zos/bmw-prod/af8bdfa5-f0ae-446b-836e-1d0340d2f5c6.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: all .3s cubic-bezier(0.645, 0.045, 0.355, 1);
-}
-
 .current-node-shape {
   background-image: url(https://gw.alipayobjects.com/zos/bmw-prod/3818284f-32e3-44cb-875c-1b722074ddaa.svg);
   background-repeat: no-repeat;
   background-position: center;
   transition: all .3s cubic-bezier(0.645, 0.045, 0.355, 1);
-
 }
 
 :deep(.arco-collapse-item-content) {
@@ -250,5 +243,13 @@ const handleCancel = () => {
 :deep(.arco-tabs-content) {
   height: calc(100vh - 90px);
   overflow: auto;
+}
+
+.sidebar-shadow {
+  box-shadow: -5px 0 5px rgba(0, 0, 0, 0.08);
+}
+
+:deep(.shape-select) {
+  border-color: #e5e7eb;
 }
 </style>

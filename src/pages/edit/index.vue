@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, provide } from 'vue'
 import BrainMap from '^/index'
 import dataSource from '~/example'
 import ToolbarTopLeft from './components/global/ToolbarTopLeft.vue';
@@ -11,33 +11,16 @@ import bus from '@/utils/bus';
 import Sidebar from './components/sidebar/Sidebar.vue';
 
 let brainMap: BrainMap
-
 let showNodeToolbar = ref(false)
 const brainMapContainer = ref()
 const mainContainer = ref()
 const eventList = ['node_active', 'clear_active']
 const showSidebar = ref(false)
 
+provide('_showSidebar', showSidebar)
 onMounted(() => {
   init()
-  bus.on('visibleChange', (e: any) => {
-    if (!e) {
-      brainMapContainer.value.style.marginRight = 0
-      mainContainer.value.style.width = '100vw'
-      brainMapContainer.value.style.width = '100%'
-      if (brainMap.svg) {
-        brainMap.svg.css('width', '100%')
-      }
-    } else {
-      mainContainer.value.style.marginRight = 280 + 'px'
-      mainContainer.value.style.width = 'calc(100vw - 280px)'
-      brainMapContainer.value.style.width = 'calc(100vw - 280px)'
-      if (brainMap.svg) {
-        brainMap.svg.css('width', '100%')
-      }
-    }
-    showSidebar.value = e
-  })
+  bindEvent()
 })
 
 // 初始化编辑层
@@ -60,6 +43,28 @@ async function init() {
       bus.emit(item, args)
     })
   })
+}
+
+function bindEvent() {
+  bus.on('sidebarVisibleChange', (e: any) => {
+    if (!e) {
+      brainMapContainer.value.style.marginRight = 0
+      mainContainer.value.style.width = '100vw'
+      brainMapContainer.value.style.width = '100%'
+      if (brainMap.svg) {
+        brainMap.svg.css('width', '100%')
+      }
+      showNodeToolbar.value = false
+    } else {
+      mainContainer.value.style.marginRight = 280 + 'px'
+      mainContainer.value.style.width = 'calc(100vw - 280px)'
+      brainMapContainer.value.style.width = 'calc(100vw - 280px)'
+      if (brainMap.svg) {
+        brainMap.svg.css('width', '100%')
+      }
+    }
+    showSidebar.value = e
+  })
 
   bus?.on('node_active', (e: any) => {
     showNodeToolbar.value = true
@@ -79,11 +84,7 @@ async function init() {
   bus.on('clear_active', () => {
     showNodeToolbar.value = false
   })
-
 }
-
-
-
 
 </script>
 
@@ -99,10 +100,9 @@ async function init() {
     </div>
 
     <div id="brainMapContainer" ref="brainMapContainer" />
-    <node-toolbar v-show="showNodeToolbar"></node-toolbar>
+    <node-toolbar v-if="showNodeToolbar && !showSidebar"></node-toolbar>
   </div>
-  <Sidebar v-show="showSidebar" class="absolute right-0 ">
-  </Sidebar>
+  <Sidebar v-show="showSidebar" class="absolute right-0 "></Sidebar>
 </template>
 
 <style lang="less" scoped>

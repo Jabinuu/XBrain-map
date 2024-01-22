@@ -1,14 +1,22 @@
 <script setup lang="ts">
-defineProps({
+
+const props = defineProps({
   hasTooltip: {
     type: Boolean,
     default: undefined
   }
 })
+
+let tooltipVisible = ref(props.hasTooltip)
+onMounted(() => {
+  if (props.hasTooltip === undefined) {
+    tooltipVisible.value = undefined
+  }
+})
 </script>
 
 <template>
-  <a-tooltip mini background-color="rgba(0,0,0,0.7)" :popup-visible="hasTooltip" :arrow-style="{ width: 0 }">
+  <a-tooltip mini background-color="rgba(0,0,0,0.7)" :popup-visible="tooltipVisible" :arrow-style="{ width: 0 }">
     <a-button type="text">
       <template #icon>
         <slot name="icon"></slot>
