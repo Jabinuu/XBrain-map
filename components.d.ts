@@ -27,6 +27,7 @@ declare module 'vue' {
     ATabs: typeof import('@arco-design/web-vue')['Tabs']
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip']
     ATooptip: typeof import('@arco-design/web-vue')['Tooptip']
+    ColorPicker: typeof import('./src/components/ColorPicker.vue')['default']
     IconBtn: typeof import('./src/components/IconBtn.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

@@ -3,6 +3,7 @@ import { IconBold, IconItalic, IconStrikethrough, IconUnderline, IconAlignLeft, 
 import bus from '@/utils/bus'
 import LayoutSelect from './LayoutSelect.vue'
 import ShapeSelect from './ShapeSelect.vue';
+import ColorPicker from '@/components/ColorPicker.vue'
 
 defineProps<{
   isVisible?: boolean
@@ -51,10 +52,16 @@ const fontSizeList = [{
 }]
 
 const fontSize = ref(14)
+const nodeFillColor = ref('transparent')
+const isFillTransparent = computed(() => nodeFillColor.value === 'transparent')
 
-const handleCancel = () => {
+function handleCancel() {
   bus.emit('sidebarVisibleChange', false)
-};
+}
+
+function handleNodeFillChange(val: string) {
+  nodeFillColor.value = val
+}
 
 </script>
 
@@ -65,7 +72,7 @@ const handleCancel = () => {
       <div class="w4 h4 cancel-btn mr4" @click="handleCancel">
       </div>
     </div>
-    <a-tabs default-active-key="1">
+    <a-tabs default-active-key="1" class="main-tabs">
       <a-tab-pane key="1" title="节点">
         <a-collapse :default-active-key="[1, 2, 3]" :bordered="false">
           <a-collapse-item header="布局" :style="customStyle" :key="1">
@@ -82,15 +89,38 @@ const handleCancel = () => {
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>填充颜色</span>
-                <div class="w22 h8 rd border p1">
-                  <div class="bg-pink h-full"></div>
-                </div>
+                <a-popover trigger="click" position="tr" class="w58">
+                  <div v-if="!isFillTransparent" class="w22 h8 rd border p1 cursor-pointer">
+                    <div class="h-full" :style="{ backgroundColor: nodeFillColor }"></div>
+                  </div>
+                  <div v-else class="w22 h8 rd border cursor-pointer">
+                    <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg" class="larkui-popover-trigger">
+                      <path d="M0 30L86 0" stroke="#D0021B" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                      </path>
+                    </svg>
+                  </div>
+                  <template #content>
+                    <color-picker @node-fill-change="handleNodeFillChange"></color-picker>
+                  </template>
+                </a-popover>
+
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>边框颜色</span>
-                <div class="w22 h8 rd border p1">
-                  <div class="bg-pink h-full"></div>
-                </div>
+                <a-popover trigger="click" position="tr" class="w58">
+                  <div v-if="!isFillTransparent" class="w22 h8 rd border p1 cursor-pointer">
+                    <div class="bg-pink h-full"></div>
+                  </div>
+                  <div v-else class="w22 h8 rd border cursor-pointer">
+                    <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg" class="larkui-popover-trigger">
+                      <path d="M0 30L86 0" stroke="#D0021B" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                      </path>
+                    </svg>
+                  </div>
+                  <template #content>
+                    <color-picker></color-picker>
+                  </template>
+                </a-popover>
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>边框粗细</span>
@@ -123,7 +153,7 @@ const handleCancel = () => {
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>分支类型</span>
-                <div class="w22 h8 ">
+                <div class="w22 h8">
                   <a-radio-group type="button" size="large" class="mb flex rd border  bg-white">
                     <a-radio>
                       <icon-align-left class="w4 h4 icon-black " />
@@ -240,7 +270,7 @@ const handleCancel = () => {
   background-image: url(https://gw.alipayobjects.com/zos/bmw-prod/3a5cc682-0502-44f1-80cf-4a8de2d89e1e.svg);
 }
 
-:deep(.arco-tabs-content) {
+:deep(.main-tabs .arco-tabs-content) {
   height: calc(100vh - 90px);
   overflow: auto;
 }
