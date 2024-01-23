@@ -53,7 +53,10 @@ const fontSizeList = [{
 
 const fontSize = ref(14)
 const nodeFillColor = ref('transparent')
+const borderColor = ref('transparent')
+const lineColor = ref('#000000')
 const isFillTransparent = computed(() => nodeFillColor.value === 'transparent')
+const isBorderTransparent = computed(() => borderColor.value === 'transparent')
 
 function handleCancel() {
   bus.emit('sidebarVisibleChange', false)
@@ -63,6 +66,14 @@ function handleNodeFillChange(val: string) {
   nodeFillColor.value = val
 }
 
+function handleBorderColorChange(val: string) {
+  borderColor.value = val
+}
+
+function handleLineColorChange(val: string) {
+  if (val === 'transparent') return
+  lineColor.value = val
+}
 </script>
 
 <template>
@@ -100,7 +111,7 @@ function handleNodeFillChange(val: string) {
                     </svg>
                   </div>
                   <template #content>
-                    <color-picker @node-fill-change="handleNodeFillChange"></color-picker>
+                    <color-picker @color-select-change="handleNodeFillChange"></color-picker>
                   </template>
                 </a-popover>
 
@@ -108,8 +119,8 @@ function handleNodeFillChange(val: string) {
               <div class="flex justify-between flex-items-center mb">
                 <span>边框颜色</span>
                 <a-popover trigger="click" position="tr" class="w58">
-                  <div v-if="!isFillTransparent" class="w22 h8 rd border p1 cursor-pointer">
-                    <div class="bg-pink h-full"></div>
+                  <div v-if="!isBorderTransparent" class="w22 h8 rd border p1 cursor-pointer">
+                    <div class="h-full" :style="{ backgroundColor: borderColor }"></div>
                   </div>
                   <div v-else class="w22 h8 rd border cursor-pointer">
                     <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg" class="larkui-popover-trigger">
@@ -118,7 +129,7 @@ function handleNodeFillChange(val: string) {
                     </svg>
                   </div>
                   <template #content>
-                    <color-picker></color-picker>
+                    <color-picker @color-select-change="handleBorderColorChange"></color-picker>
                   </template>
                 </a-popover>
               </div>
@@ -137,13 +148,19 @@ function handleNodeFillChange(val: string) {
             <div>
               <div class="flex justify-between flex-items-center mb">
                 <span>分支颜色</span>
-                <div class="w22 h8 rd border flex justify-center flex-items-center">
-                  <svg width="64" viewBox="0 0 64 12" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M64 2c-27.42 0-35.012 8-64 8" stroke="#A287E1" stroke-width="4" fill="none"
-                      fill-rule="evenodd">
-                    </path>
-                  </svg>
-                </div>
+                <a-popover trigger="click" position="tr" class="w58">
+                  <div class="w22 h8 rd border flex justify-center flex-items-center">
+                    <svg width="64" viewBox="0 0 64 12" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M64 2c-27.42 0-35.012 8-64 8" :stroke="lineColor" stroke-width="4" fill="none"
+                        fill-rule="evenodd">
+                      </path>
+                    </svg>
+                  </div>
+                  <template #content>
+                    <color-picker @color-select-change="handleLineColorChange"></color-picker>
+                  </template>
+                </a-popover>
+
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>分支粗细</span>
@@ -153,16 +170,31 @@ function handleNodeFillChange(val: string) {
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>分支类型</span>
-                <div class="w22 h8">
-                  <a-radio-group type="button" size="large" class="mb flex rd border  bg-white">
-                    <a-radio>
-                      <icon-align-left class="w4 h4 icon-black " />
-                    </a-radio>
-                    <a-radio>
-                      <icon-align-center class="w4 h4 icon-black " />
-                    </a-radio>
-                  </a-radio-group>
-                </div>
+                <a-radio-group type="button" size="large" class="w22 h8 border rd">
+                  <a-radio value="1">
+                    <div class="h6 flex flex-items-center">
+                      <svg t="1705977959264" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        p-id="2478" width="16" height="16">
+                        <path
+                          d="M504.618667 245.333333A227.285333 227.285333 0 0 0 277.333333 472.618667v57.642666a248.405333 248.405333 0 0 0 248.405334 248.405334h252.928a32 32 0 0 1 0 64h-252.928A312.405333 312.405333 0 0 1 213.333333 530.261333v-57.6a291.285333 291.285333 0 0 1 291.285334-291.328h274.048a32 32 0 0 1 0 64h-274.048z"
+                          fill="#2C2722" p-id="2479"></path>
+                        <path
+                          d="M138.666667 512a32 32 0 0 1 32-32h682.666666a32 32 0 0 1 0 64H170.666667a32 32 0 0 1-32-32z"
+                          fill="#2C2722" p-id="2480"></path>
+                      </svg>
+                    </div>
+                  </a-radio>
+                  <a-radio value="2">
+                    <div class="h6 flex flex-items-center">
+                      <svg t="1705978489676" class=" icon-black " viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="13902" width="14" height="14">
+                        <path
+                          d="M715.52 162.368h246.208a47.68 47.68 0 0 0 0-95.36H715.52a47.68 47.68 0 0 0 0 95.36M961.728 861.632H715.52a47.68 47.68 0 0 0 0 95.36h246.272a47.68 47.68 0 0 0 0-95.36M961.728 464.32H715.52a47.68 47.68 0 0 0 0 95.36h246.272a47.68 47.68 0 0 0 0-95.36M298.816 162.368h257.664a47.68 47.68 0 0 0 0-95.36H298.816a158.912 158.912 0 0 0-156.8 160.576v226.56H62.336a47.68 47.68 0 0 0 0 95.36H142.08v246.912a158.912 158.912 0 0 0 156.736 160.576h257.664a47.68 47.68 0 0 0 0-95.36H298.816a63.872 63.872 0 0 1-62.272-65.216V549.504h319.936a47.68 47.68 0 0 0 0-95.36h-320v-226.56a63.872 63.872 0 0 1 62.336-65.28"
+                          fill="#333333" p-id="13903"></path>
+                      </svg>
+                    </div>
+                  </a-radio>
+                </a-radio-group>
               </div>
               <div class="mb">
                 <a-checkbox>彩虹分支</a-checkbox>
@@ -233,12 +265,11 @@ function handleNodeFillChange(val: string) {
 
           </a-collapse-item>
           <a-collapse-item header="链接" :style="customStyle" :key="2">
-            <a-button class="rd  block">添加链接</a-button>
+            <a-button class="rd block">添加链接</a-button>
           </a-collapse-item>
         </a-collapse>
       </a-tab-pane>
     </a-tabs>
-
   </div>
 </template>
 

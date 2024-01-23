@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { IconCheck } from '@arco-design/web-vue/es/icon';
 
-const emit = defineEmits(['nodeFillChange'])
+const emit = defineEmits(['colorSelectChange'])
 
 const colorThemePanel = ref([
   ['#262626', '#ffffff', '#00AEBF', '#0086FF', '#15CA52'],
@@ -39,7 +39,7 @@ function handleClickColor(value: string, e: Event) {
   } else {
     selectedColorGradient.value = colorGradient[value][3];
   }
-  emit('nodeFillChange', selectedColorGradient.value)
+  emit('colorSelectChange', selectedColorGradient.value)
 }
 
 function handleClickColorGrdient(idx: number) {
@@ -47,7 +47,7 @@ function handleClickColorGrdient(idx: number) {
     activeSelectColor('#262626', (colorWrap.value as HTMLElement).children[0].children[1] as HTMLElement)
   }
   selectedColorGradient.value = colorGradient[selectedColor.value][idx];
-  emit('nodeFillChange', selectedColorGradient.value)
+  emit('colorSelectChange', selectedColorGradient.value)
 }
 
 // 激活颜色排他

@@ -94,11 +94,7 @@ function bindEvent() {
       <toolbar-top-left></toolbar-top-left>
       <toolbar-top-right></toolbar-top-right>
     </div>
-
-    <div class="group-prompt">
-      <group-prompt></group-prompt>
-    </div>
-
+    <group-prompt></group-prompt>
     <div id="brainMapContainer" ref="brainMapContainer" />
     <node-toolbar v-if="showNodeToolbar && !showSidebar"></node-toolbar>
   </div>
@@ -127,12 +123,7 @@ function bindEvent() {
   padding-right: 30px;
 }
 
-.group-prompt {
-  z-index: 1;
-  position: fixed;
-  right: 20px;
-  bottom: 50px;
-}
+
 
 :deep(.icon) {
   width: 18px;
