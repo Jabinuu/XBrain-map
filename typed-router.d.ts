@@ -48,7 +48,6 @@ declare module 'vue-router/auto/routes' {
     '/edit/components/global/ToolbarView': RouteRecordInfo<'/edit/components/global/ToolbarView', '/edit/components/global/ToolbarView', Record<never, never>, Record<never, never>>,
     '/edit/components/global/ToolbarVisible': RouteRecordInfo<'/edit/components/global/ToolbarVisible', '/edit/components/global/ToolbarVisible', Record<never, never>, Record<never, never>>,
     '/edit/components/node/NodeToolbar': RouteRecordInfo<'/edit/components/node/NodeToolbar', '/edit/components/node/NodeToolbar', Record<never, never>, Record<never, never>>,
-    '/edit/components/sidebar/LayoutSelect': RouteRecordInfo<'/edit/components/sidebar/LayoutSelect', '/edit/components/sidebar/LayoutSelect', Record<never, never>, Record<never, never>>,
     '/edit/components/sidebar/ShapeSelect': RouteRecordInfo<'/edit/components/sidebar/ShapeSelect', '/edit/components/sidebar/ShapeSelect', Record<never, never>, Record<never, never>>,
     '/edit/components/sidebar/Sidebar': RouteRecordInfo<'/edit/components/sidebar/Sidebar', '/edit/components/sidebar/Sidebar', Record<never, never>, Record<never, never>>,
     '/home/': RouteRecordInfo<'/home/', '/home', Record<never, never>, Record<never, never>>,

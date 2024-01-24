@@ -2,13 +2,13 @@
 
 const itemWrap = ref()
 const selectLayout = ref('standard-r')
+defineProps(['position'])
 
 function handleSelectLayout(e: Event) {
   const arr = Array.from((itemWrap.value as HTMLElement).children)
   arr.forEach((child) => {
     child.classList.remove('bg-select')
   });
-
   (e.target as HTMLElement).classList.add('bg-select')
 }
 
@@ -30,8 +30,8 @@ function handleSelect(value: any) {
 </script>
 
 <template>
-  <a-dropdown position="br" @select="handleSelect" @popup-visible-change="handleShowDropdown">
-    <div class="w22 h8 rd border current-layout cursor-pointer" :class="selectLayout" />
+  <a-dropdown :position="position" @select="handleSelect" @popup-visible-change="handleShowDropdown">
+    <slot name="button" :selectLayout="selectLayout"></slot>
     <template #content>
       <div class="flex w42 flex-wrap pl2.75 pr2.75 layout-select" ref="itemWrap">
         <a-doption class="standard-r rd" @click="handleSelectLayout" value="standard-r">
@@ -48,12 +48,6 @@ function handleSelect(value: any) {
 </template>
 
 <style lang="less" scoped>
-.current-layout {
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: all .1s cubic-bezier(0.645, 0.045, 0.355, 1);
-}
-
 .layout-select>li {
   width: 48px;
   height: 32px;
