@@ -30,6 +30,7 @@ export default defineConfig({
     ['fs-0.9', { 'font-size': '0.9em' }],
     ['icon-black', { 'color': '#262626' }],
     ['bg-white', { 'background-color': '#fff' }],
+    ['bg-hover', { 'background-color': 'rgb(242,243,245)' }],
     ['bg-select', { 'background-color': 'rgba(231,233,232,0.9)' }],
     ['bg-pink', { 'background-color': 'pink' }],
     ['rd-8', { 'border-radius': '8px' }],

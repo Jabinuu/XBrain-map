@@ -284,7 +284,13 @@ function handleFontColorChange(val: string) {
           </a-collapse-item>
 
           <a-collapse-item header="链接" :style="customStyle" :key="2">
-            <a-button class="rd block" @click="bus.emit('show_link', true)">添加链接</a-button>
+            <a-popover trigger="click" :arrow-style="{ width: 0 }" :popup-style="{ top: '200px', left: '200px' }">
+              <a-button class="rd block">添加链接</a-button>
+              <template #content>
+                <add-link></add-link>
+              </template>
+            </a-popover>
+
           </a-collapse-item>
         </a-collapse>
       </a-tab-pane>

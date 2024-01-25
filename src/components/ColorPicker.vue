@@ -27,7 +27,7 @@ const colorWrap = ref()
 const colorGradientWrap = ref()
 const checkIconColor = computed(() => selectedColor.value === '#ffffff' ? '#8A8F8D' : '#fff')
 
-function handleClickColor(value: string, e: Event) {
+function handleClickColor(value: string) {
   selectedColor.value = value
   // 选择默认色彩梯度
   if (value === '#262626') {
@@ -57,7 +57,7 @@ function handleClickColorGrdient(idx: number) {
       <div class="mb mt0.4 ml0.5" ref="colorWrap">
         <div class="flex mb2.5">
           <div class="w5.5 h5.5 rd-2.75 mr2.5 cursor-pointer relative color-panel-item-clear"
-            @click="handleClickColor('transparent', $event)">
+            @click="handleClickColor('transparent')">
             <svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink">
               <g id="画板" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -69,13 +69,13 @@ function handleClickColorGrdient(idx: number) {
           </div>
           <div v-for="(item, idx) in colorThemePanel[0]" :key="idx"
             class="w5.5 h5.5 rd-2.75 mr2.5 cursor-pointer relative color-panel-item" :style="{ backgroundColor: item }"
-            @click="handleClickColor(item, $event)" :class="{ 'color-panel-item-active': selectedColor === item }">
+            @click="handleClickColor(item)" :class="{ 'color-panel-item-active': selectedColor === item }">
           </div>
         </div>
         <div class="flex">
           <div v-for="(item, idx) in colorThemePanel[1]" :key="idx"
             class="w5.5 h5.5 rd-2.75 mr2.5 cursor-pointer relative color-panel-item" :style="{ backgroundColor: item }"
-            @click="handleClickColor(item, $event)" :class="{ 'color-panel-item-active': selectedColor === item }">
+            @click="handleClickColor(item)" :class="{ 'color-panel-item-active': selectedColor === item }">
           </div>
         </div>
       </div>
@@ -131,7 +131,7 @@ function handleClickColorGrdient(idx: number) {
       <div class="mb mt0.4 ml0.5" ref="colorWrap">
         <div class="flex mb2.5">
           <div class="w5.5 h5.5 rd-2.75 mr2.5 cursor-pointer relative color-panel-item-clear"
-            @click="handleClickColor('transparent', $event)">
+            @click="handleClickColor('transparent')">
             <svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink">
               <title>画板</title>
@@ -144,13 +144,13 @@ function handleClickColorGrdient(idx: number) {
           </div>
           <div v-for="(item, idx) in colorThemePanel[0]" :key="idx"
             class="w5.5 h5.5 rd-2.75 mr2.5 cursor-pointer relative color-panel-item" :style="{ backgroundColor: item }"
-            @click="handleClickColor(item, $event)">
+            @click="handleClickColor(item)">
           </div>
         </div>
         <div class="flex">
           <div v-for="(item, idx) in colorThemePanel[1]" :key="idx"
             class="w5.5 h5.5 rd-2.75 mr2.5 cursor-pointer relative color-panel-item" :style="{ backgroundColor: item }"
-            @click="handleClickColor(item, $event)">
+            @click="handleClickColor(item)">
           </div>
         </div>
       </div>
