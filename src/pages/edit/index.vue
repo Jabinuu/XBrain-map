@@ -25,7 +25,7 @@ let brainMap: BrainMap
 let showNodeToolbar = ref(false)
 const brainMapContainer = ref()
 const mainContainer = ref()
-const eventList = ['node_active', 'clear_active', '_contextmenu', 'draw_mousedown']
+const eventList = ['node_active', 'clear_active', '_contextmenu', 'draw_mousedown','node_mousedown']
 const showSidebar = ref(false)
 const showAddLink = ref(false)
 
@@ -206,7 +206,11 @@ function useContextMenu() {
     const menuList = e.currentTarget.classList.contains('bm-node') ? nodeMenuList : drawMenuList
     show(menuList, e.clientX, e.clientY)
   })
-  bus.on('draw_mousedown', () => {
+  window.addEventListener('mousedown',()=>{
+    hide()
+  })
+
+  bus.on('node_mousedown',()=>{
     hide()
   })
 }
