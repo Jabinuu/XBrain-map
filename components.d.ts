@@ -35,6 +35,7 @@ declare module 'vue' {
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip']
     ATooptip: typeof import('@arco-design/web-vue')['Tooptip']
     ColorPicker: typeof import('./src/components/ColorPicker.vue')['default']
+    ContextMenu: typeof import('./src/components/ContextMenu.vue')['default']
     IconBtn: typeof import('./src/components/IconBtn.vue')['default']
     IconFont: typeof import('./src/components/IconFont.vue')['default']
     LayoutSelect: typeof import('./src/components/LayoutSelect.vue')['default']

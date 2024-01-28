@@ -10,19 +10,32 @@ import Node from '^/src/node/Node';
 import bus from '@/utils/bus';
 import Sidebar from './components/sidebar/Sidebar.vue';
 import AddLink from '@/components/AddLink.vue';
+import { openContextMenu } from '@/components/ContextMenu';
+
+export interface MenuListItem {
+  text: string
+  key: string
+  shortcut?: string
+  disable?: () => boolean
+  children?: MenuListItem[]
+  action?: () => void
+}
 
 let brainMap: BrainMap
 let showNodeToolbar = ref(false)
 const brainMapContainer = ref()
 const mainContainer = ref()
-const eventList = ['node_active', 'clear_active']
+const eventList = ['node_active', 'clear_active', '_contextmenu', 'draw_mousedown']
 const showSidebar = ref(false)
 const showAddLink = ref(false)
+
+
 
 provide('_showSidebar', showSidebar)
 onMounted(() => {
   init()
   bindEvent()
+  useContextMenu()
 })
 
 // 初始化编辑层
@@ -89,6 +102,112 @@ function bindEvent() {
 
   bus.on('show_link', (val: any) => {
     showAddLink.value = val
+  })
+}
+
+function useContextMenu() {
+  const drawMenuList: MenuListItem[] = [{
+    text: '回到根节点',
+    key: 'backToRoot',
+    action() {
+      console.log('回到根节点');
+    }
+  }, {
+    text: '展开所有',
+    key: 'expandAll',
+    action() {
+      console.log('展开所有');
+    }
+  }, {
+    text: '收起所有',
+    key: 'collapseAll',
+    action() {
+      console.log('收起所有');
+    },
+  }, {
+    text: '适应画布',
+    key: 'fixDrawing',
+    action() {
+      console.log('适应画布');
+    },
+  }, {
+    text: '禅模式',
+    key: 'zenMode',
+    action() {
+      console.log('禅模式');
+    }
+  }]
+
+  const nodeMenuList: MenuListItem[] = [{
+    text: '插入',
+    key: 'insert',
+    children: [{
+      text: '子级',
+      key: 'child',
+      action() {
+        console.log('插入子级');
+      }
+    }, {
+      text: '父级',
+      key: 'parent',
+      action() {
+        console.log('插入父级');
+      }
+    }, {
+      text: '同级',
+      key: 'pair',
+      action() {
+        console.log('插入同级');
+      }
+    }],
+    action() {
+      console.log('插入');
+    },
+  }, {
+    text: '折叠',
+    key: 'expand',
+    action() {
+      console.log('折叠');
+    },
+  }, {
+    text: '剪切',
+    key: 'cut',
+    action() {
+      console.log('剪切');
+    },
+  }, {
+    text: '复制',
+    key: 'copy',
+    action() {
+      console.log('复制');
+    },
+  }, {
+    text: '粘贴',
+    key: 'paste',
+    action() {
+      console.log('粘贴');
+    },
+  }, {
+    text: '删除',
+    key: 'remove',
+    action() {
+      console.log('删除');
+    },
+  }, {
+    text: '删除单个节点',
+    key: 'removeSingle',
+    action() {
+      console.log('删除单个节点');
+    },
+  }]
+
+  const { show, hide } = openContextMenu()
+  bus.on('_contextmenu', (e: any) => {
+    const menuList = e.currentTarget.classList.contains('bm-node') ? nodeMenuList : drawMenuList
+    show(menuList, e.clientX, e.clientY)
+  })
+  bus.on('draw_mousedown', () => {
+    hide()
   })
 }
 

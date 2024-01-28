@@ -21,6 +21,12 @@ const alignMode = ref<'left' | 'center' | 'right' | 'all'>('left')
 const fontSizeList = ref([12, 14, 16, 18, 22, 24, 32, 36, 48, 64, 92])
 const fontSize = ref(14)
 const fontColor = ref('#000000')
+const priority = ref('')
+const progress = ref('')
+const flag = ref('')
+const tagPriority = ['icon-youxianji1', 'icon-youxianji2', 'icon-youxianji3', 'icon-youxianji4', 'icon-youxianji5', 'icon-youxianji6', 'icon-youxianji7']
+const tagProgress = ['icon-shijian', 'icon-chart18', 'icon-chart14', 'icon-chart12', 'icon-chart58', 'icon-chart78', 'icon-wuuiconxuan']
+const tagFlag = ['icon-qizhi1', 'icon-qizhi2', 'icon-qizhi3', 'icon-qizhi4', 'icon-qizhi5', 'icon-qizhi6', 'icon-qizhi7']
 
 function onClickSettingBtn() {
   hasTooltip.value = false
@@ -343,14 +349,37 @@ function showCheckIcon(val: string) {
           </template>
         </a-dropdown>
 
-
-
-        <icon-btn>
-          <template #icon>
-            <icon-tags class="w4.5 h4.5 icon-black" />
+        <a-popover trigger="click" :arrow-style="{ width: 0 }" position="bl" :content-style="{ width: '240px' }">
+          <icon-btn>
+            <template #icon>
+              <icon-tags class="w4.5 h4.5 icon-black" />
+            </template>
+            <template #tooltipContent>添加标记</template>
+          </icon-btn>
+          <template #content>
+            <div class="mb">
+              <div>优先级</div>
+              <div class="flex justify-between flex-items-center h8">
+                <icon-font v-for="(item, idx) in tagPriority" :key="idx" :type="item" :size="19" class="cursor-pointer"
+                  @click="priority = item"></icon-font>
+              </div>
+            </div>
+            <div class="mb">
+              <div>进度</div>
+              <div class="flex justify-between flex-items-center h8">
+                <icon-font v-for="(item, idx) in tagProgress" :key="idx" :type="item" :size="19" class="cursor-pointer"
+                  @click="progress = item"></icon-font>
+              </div>
+            </div>
+            <div>
+              <div>旗帜</div>
+              <div class="flex justify-between flex-items-center h8">
+                <icon-font v-for="(item, idx) in tagFlag" :key="idx" :type="item" :size="21" class="cursor-pointer"
+                  @click="flag = item"></icon-font>
+              </div>
+            </div>
           </template>
-          <template #tooltipContent>添加标记</template>
-        </icon-btn>
+        </a-popover>
 
         <a-popover trigger="click" :arrow-style="{ width: 0 }">
           <icon-btn>

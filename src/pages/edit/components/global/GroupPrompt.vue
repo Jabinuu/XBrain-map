@@ -4,6 +4,7 @@ import { IconCustomerService, IconCommand, IconMinusCircle } from '@arco-design/
 const minusIcon = ref()
 const rightPos = ref('20px')
 let isMinimized = false
+const shortcutVisible = ref(false)
 
 function handleMouseEvent(type: 'enter' | 'leave') {
   if (type === 'enter') {
@@ -32,7 +33,8 @@ function handleClickWrap() {
   <div @mouseenter="handleMouseEvent('enter')" @mouseleave="handleMouseEvent('leave')" class="fixed bottom-12.5 z-100"
     :style="{ right: rightPos }">
     <div class="flex flex-col justify-between h27" @click="handleClickWrap">
-      <div class="w11 h11 round bg-white  flex justify-center flex-items-center btn-shadow">
+      <div class="w11 h11 round bg-white  flex justify-center flex-items-center btn-shadow"
+        @click="shortcutVisible = true">
         <icon-btn>
           <template #icon>
             <icon-command class="w5 h5 icon-black" />
@@ -57,6 +59,18 @@ function handleClickWrap() {
       <icon-minus-circle class="w5.5 h5.5 opacity-80 minus-color" />
     </div>
   </div>
+
+  <a-drawer :width="340" :visible="shortcutVisible" @cancel="shortcutVisible = false" unmountOnClose :mask="false"
+    :footer="false"
+    :drawerStyle="{ boxShadow: '-6px 0 16px -8px rgba(0,0,0,.08), -9px 0 28px 0 rgba(0,0,0,.05), -12px 0 48px 16px rgba(0,0,0,.03)' }">
+    <template #title>
+      快捷键
+    </template>
+    <div>
+      <h3>插入</h3>
+      <div></div>
+    </div>
+  </a-drawer>
 </template>
 
 <style lang="less" scoped>
