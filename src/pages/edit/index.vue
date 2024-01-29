@@ -29,8 +29,6 @@ const eventList = ['node_active', 'clear_active', '_contextmenu', 'draw_mousedow
 const showSidebar = ref(false)
 const showAddLink = ref(false)
 
-
-
 provide('_showSidebar', showSidebar)
 onMounted(() => {
   init()
@@ -39,8 +37,7 @@ onMounted(() => {
 })
 
 // 初始化编辑层
-async function init() {
-  await BrainMap.usePlugin('Select')
+function init() {
   if (brainMapContainer.value !== null) {
     brainMap = new BrainMap({
       el: brainMapContainer.value,
@@ -50,6 +47,7 @@ async function init() {
         lineStyle: 'curve',
       }
     })
+    BrainMap.usePlugin('Select',brainMap)
   }
 
   // 转发事件
@@ -60,7 +58,7 @@ async function init() {
   })
 }
 
-function bindEvent() {
+function bindEvent() {  
   bus.on('sidebarVisibleChange', (e: any) => {
     if (!e) {
       brainMapContainer.value.style.marginRight = 0
@@ -81,10 +79,10 @@ function bindEvent() {
     showSidebar.value = e
   })
 
-  bus?.on('node_active', (e: any) => {
+  bus?.on('node_active', (manipulateNodes: any) => {
     showNodeToolbar.value = true
     nextTick(() => {
-      const node: Node = e[0]
+      const node: Node = [...manipulateNodes[0]][0]
       const _nodeToolbar = document.getElementById('node-toolbar-wrap')
 
       if (_nodeToolbar) {
@@ -227,7 +225,7 @@ function useContextMenu() {
     <div id="brainMapContainer" ref="brainMapContainer" />
     <node-toolbar v-if="showNodeToolbar && !showSidebar"></node-toolbar>
   </div>
-  <Sidebar v-show="showSidebar" class="absolute right-0 "></Sidebar>
+  <Sidebar v-show="showSidebar" class="absolute right-0" ></Sidebar>
   <add-link v-if="showAddLink"></add-link>
 </template>
 

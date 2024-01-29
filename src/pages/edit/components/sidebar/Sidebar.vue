@@ -5,6 +5,8 @@ import LayoutSelect from '@/components/LayoutSelect.vue'
 import ShapeSelect from './ShapeSelect.vue';
 import ColorPicker from '@/components/ColorPicker.vue'
 import IconFont from '@/components/IconFont.vue';
+import Node from '^/src/node/Node'
+import { onMounted } from 'vue';
 
 defineProps<{
   isVisible?: boolean
@@ -52,41 +54,72 @@ const fontSizeList = [{
   label: '92px'
 }]
 
-const fontSize = ref(14)
-const nodeFillColor = ref('transparent')
-const borderColor = ref('transparent')
-const lineColor = ref('#000000')
-const fontColor = ref('#000000')
-const isFillTransparent = computed(() => nodeFillColor.value === 'transparent')
-const isBorderTransparent = computed(() => borderColor.value === 'transparent')
-const shapeBorderWidth = ref(2)
 const resizeNode = ref(true)
-const branchType = ref<'straight' | 'curve'>('curve')
 const rainbowBranch = ref(true)
 const borderThinByLayer = ref(false)
-const fontSettings = ref([])
-const alignMode = ref('left')
+const activeNodes = ref()
+
+const style = ref<Record<string,any>>({
+  fontSize:-1,
+  fillColor:'',
+  borderColor:'',
+  lineColor:'',
+  color:'',
+  borderWidth:-1,
+  lineStyle:'',
+  fontSettings:[],
+  alignMode:'',
+  shape:'',
+  lineWidth:-1
+})
+const isFillTransparent = computed(() => style.value.fillColor === 'transparent')
+const isBorderTransparent = computed(() => style.value.borderColor === 'transparent')
+
+onMounted(()=>{
+  bus.on('node_active',(manipulateNodes:any)=>{
+    activeNodes.value = [...manipulateNodes[0]]
+    initSidebar()
+  })
+})
 
 function handleCancel() {
   bus.emit('sidebarVisibleChange', false)
 }
 
 function handleNodeFillChange(val: string) {
-  nodeFillColor.value = val
+  style.value.fillColor = val;
+  (activeNodes.value[0] as Node).setStyle('fillColor',val)
 }
 
 function handleBorderColorChange(val: string) {
-  borderColor.value = val
+  style.value.borderColor = val;
+  (activeNodes.value[0] as Node).setStyle('borderColor',val)
 }
 
 function handleLineColorChange(val: string) {
   if (val === 'transparent') return
-  lineColor.value = val
+  style.value.lineColor = val;
+  (activeNodes.value[0] as Node).setStyle('lineColor',val)
 }
 
 function handleFontColorChange(val: string) {
   if (val === 'transparent') return
-  fontColor.value = val
+  style.value.color = val;
+  (activeNodes.value[0] as Node).setStyle('fontColor',val)
+}
+
+function initSidebar(){  
+  ['fontSize',
+  'fillColor',
+  'borderColor',
+  'lineColor',
+  'color',
+  'borderWidth',
+  'lineStyle',
+  'shape',
+  'lineWidth'].forEach((prop)=>{        
+    style.value[prop] = (activeNodes.value[0] as Node).getStyle(prop)
+  })
 }
 </script>
 
@@ -114,13 +147,13 @@ function handleFontColorChange(val: string) {
             <div>
               <div class="flex justify-between flex-items-center mb">
                 <span>节点形状</span>
-                <shape-select></shape-select>
+                <shape-select :active-nodes="activeNodes"></shape-select>
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>填充颜色</span>
                 <a-popover trigger="click" position="tr" class="w58">
                   <div v-if="!isFillTransparent" class="w22 h8 rd border p1 cursor-pointer">
-                    <div class="h-full" :style="{ backgroundColor: nodeFillColor }"></div>
+                    <div class="h-full" :style="{ backgroundColor: style.fillColor }"></div>
                   </div>
                   <div v-else class="w22 h8 rd border cursor-pointer">
                     <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg" class="larkui-popover-trigger">
@@ -138,7 +171,7 @@ function handleFontColorChange(val: string) {
                 <span>边框颜色</span>
                 <a-popover trigger="click" position="tr" class="w58">
                   <div v-if="!isBorderTransparent" class="w22 h8 rd border p1 cursor-pointer">
-                    <div class="h-full" :style="{ backgroundColor: borderColor }"></div>
+                    <div class="h-full" :style="{ backgroundColor: style.borderColor }"></div>
                   </div>
                   <div v-else class="w22 h8 rd border cursor-pointer">
                     <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg" class="larkui-popover-trigger">
@@ -154,7 +187,8 @@ function handleFontColorChange(val: string) {
               <div class="flex justify-between flex-items-center mb">
                 <span>边框粗细</span>
                 <div class="w22 h8 rd border ">
-                  <a-input-number class="h-full w-full bg-white" :min="1" :max="5" v-model="shapeBorderWidth" />
+                  <a-input-number class="h-full w-full bg-white" :min="1" :max="5" v-model="style.borderWidth" 
+                  @change="activeNodes[0].setStyle('borderWidth',style.borderWidth)"/>
                 </div>
               </div>
               <div>
@@ -169,7 +203,7 @@ function handleFontColorChange(val: string) {
                 <a-popover trigger="click" position="tr" class="w58">
                   <div class="w22 h8 rd border flex justify-center flex-items-center">
                     <svg width="64" viewBox="0 0 64 12" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M64 2c-27.42 0-35.012 8-64 8" :stroke="lineColor" stroke-width="4" fill="none"
+                      <path d="M64 2c-27.42 0-35.012 8-64 8" :stroke="style.lineColor" stroke-width="4" fill="none"
                         fill-rule="evenodd">
                       </path>
                     </svg>
@@ -183,12 +217,14 @@ function handleFontColorChange(val: string) {
               <div class="flex justify-between flex-items-center mb">
                 <span>分支粗细</span>
                 <div class="w22 h8 rd border ">
-                  <a-input-number :default-value="2" class="h-full w-full bg-white" :min="1" :max="5" />
+                  <a-input-number :default-value="2" class="h-full w-full bg-white" :min="1" :max="5" v-model="style.lineWidth" 
+                  @change="activeNodes[0].setStyle('lineWidth',style.lineWidth)"/>
                 </div>
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>分支类型</span>
-                <a-radio-group type="button" size="large" class="w22 h8 border rd" v-model="branchType">
+                <a-radio-group type="button" size="large" class="w22 h8 border rd" v-model="style.lineStyle"
+                @change="activeNodes[0].setStyle('lineStyle',style.lineStyle)">
                   <a-radio value="curve" class="branch">
                     <div class="h6 flex flex-items-center">
                       <icon-font type="icon-siweidaotu1" :size="18"></icon-font>
@@ -215,7 +251,7 @@ function handleFontColorChange(val: string) {
       <a-tab-pane key="2">
         <template #title>文本</template>
         <div style="margin-left: 20px; margin-right: 18px;">
-          <a-checkbox-group class="mb5 flex" v-model:model-value="fontSettings" @change="console.log(fontSettings)">
+          <a-checkbox-group class="mb5 flex" v-model:model-value="style.fontSettings" @change="console.log(style.fontSettings)">
             <a-checkbox value="1">
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
@@ -248,7 +284,7 @@ function handleFontColorChange(val: string) {
 
           <div class="flex justify-between flex-items-center mb">
             <span>字号</span>
-            <a-select class="w22 h8" v-model="fontSize" :trigger-props="{ autoFitPopupMinWidth: true }">
+            <a-select class="w22 h8" v-model="style.fontSize" :trigger-props="{ autoFitPopupMinWidth: true }">
               <a-option v-for="(item, idx) in fontSizeList" :key="idx" :label="item.label" :value="item.value" />
             </a-select>
           </div>
@@ -256,7 +292,7 @@ function handleFontColorChange(val: string) {
             <span>文本颜色</span>
             <a-popover trigger="click" position="tr" class="w58">
               <div class="w22 h8 rd border p1 cursor-pointer">
-                <div class="h-full" :style="{ backgroundColor: fontColor }"></div>
+                <div class="h-full" :style="{ backgroundColor: style.color }"></div>
               </div>
               <template #content>
                 <color-picker @color-select-change="handleFontColorChange"></color-picker>
@@ -267,7 +303,7 @@ function handleFontColorChange(val: string) {
 
         <a-collapse :default-active-key="[1, 2]" :bordered="false">
           <a-collapse-item header="对齐方式" :style="customStyle" :key="1">
-            <a-radio-group type="button" size="large" class="mb flex rd border" v-model="alignMode">
+            <a-radio-group type="button" size="large" class="mb flex rd border" v-model="style.alignMode">
               <a-radio value="left">
                 <icon-align-left class="w4 h4 icon-black " />
               </a-radio>

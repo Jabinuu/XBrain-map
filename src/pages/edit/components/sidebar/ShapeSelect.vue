@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { IconDown } from '@arco-design/web-vue/es/icon';
+import Node from '^/src/node/Node'
+defineProps(['activeNodes'])
 
 const selectedShape = ref('rectangle')
 const handleSelect = (value: any) => {
@@ -16,9 +18,9 @@ const handleSelect = (value: any) => {
       </div>
     </a-button>
     <template #content>
-      <a-doption class="line" value="line"></a-doption>
-      <a-doption class="capsule" value="capsule"></a-doption>
-      <a-doption class="rectangle" value="rectangle"></a-doption>
+      <a-doption class="line" value="line" @click="(activeNodes[0] as Node).setStyle('shape','line')"></a-doption>
+      <a-doption class="capsule" value="capsule" @click="(activeNodes[0] as Node).setStyle('shape','capsule')"></a-doption>
+      <a-doption class="rectangle" value="rectangle" @click="(activeNodes[0] as Node).setStyle('shape','rectangle')"></a-doption>
     </template>
   </a-dropdown>
 </template>
