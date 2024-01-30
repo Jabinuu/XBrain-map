@@ -59,24 +59,27 @@ const rainbowBranch = ref(true)
 const borderThinByLayer = ref(false)
 const activeNodes = ref()
 
-const style = ref<Record<string,any>>({
-  fontSize:-1,
-  fillColor:'',
-  borderColor:'',
-  lineColor:'',
-  color:'',
-  borderWidth:-1,
-  lineStyle:'',
-  fontSettings:[],
-  alignMode:'',
-  shape:'',
-  lineWidth:-1
+const style = ref<Record<string, any>>({
+  fontSize: -1,
+  fillColor: '',
+  borderColor: '',
+  lineColor: '',
+  color: '',
+  borderWidth: -1,
+  lineStyle: '',
+  fontStyle: false,
+  textUnderline: false,
+  textLineThrough: false,
+  fontWeight: false,
+  textAlign: 'left',
+  shape: '',
+  lineWidth: -1
 })
 const isFillTransparent = computed(() => style.value.fillColor === 'transparent')
 const isBorderTransparent = computed(() => style.value.borderColor === 'transparent')
 
-onMounted(()=>{
-  bus.on('node_active',(manipulateNodes:any)=>{
+onMounted(() => {
+  bus.on('node_active', (manipulateNodes: any) => {
     activeNodes.value = [...manipulateNodes[0]]
     initSidebar()
   })
@@ -88,37 +91,98 @@ function handleCancel() {
 
 function handleNodeFillChange(val: string) {
   style.value.fillColor = val;
-  (activeNodes.value[0] as Node).setStyle('fillColor',val)
+  (activeNodes.value[0] as Node).setStyle('fillColor', val)
 }
 
 function handleBorderColorChange(val: string) {
   style.value.borderColor = val;
-  (activeNodes.value[0] as Node).setStyle('borderColor',val)
+  (activeNodes.value[0] as Node).setStyle('borderColor', val)
 }
 
-function handleLineColorChange(val: string) {
+function handleLineColorChange(val: any) {
   if (val === 'transparent') return
   style.value.lineColor = val;
-  (activeNodes.value[0] as Node).setStyle('lineColor',val)
+  (activeNodes.value[0] as Node).setStyle('lineColor', val)
 }
 
-function handleFontColorChange(val: string) {
+function handleFontColorChange(val: any) {
   if (val === 'transparent') return
   style.value.color = val;
-  (activeNodes.value[0] as Node).setStyle('fontColor',val)
+  (activeNodes.value[0] as Node).setStyle('color', val)
 }
 
-function initSidebar(){  
+function handleFontWeight(val: any) {
+  let _val
+  if (val) {
+    _val = 'bold'
+  } else {
+    _val = 'normal'
+  }
+  activeNodes.value[0].setStyle('fontWeight', _val)
+}
+
+function handleFontStyle(val: any) {
+  let _val
+  if (val) {
+    _val = 'italic'
+  } else {
+    _val = 'normal'
+  }
+  activeNodes.value[0].setStyle('fontStyle', _val)
+}
+
+function handleTextDecoration() {
+  let val = ''
+  const { textLineThrough, textUnderline } = style.value
+  if (textUnderline && !textLineThrough) {
+    val = 'underline'
+  } else if (!textUnderline && textLineThrough) {
+    val = 'line-through'
+  } else if (textUnderline && textLineThrough) {
+    val = 'underline line-through'
+  }
+
+  activeNodes.value[0].setStyle('textDecoration', val)
+}
+
+function initSidebar() {
   ['fontSize',
-  'fillColor',
-  'borderColor',
-  'lineColor',
-  'color',
-  'borderWidth',
-  'lineStyle',
-  'shape',
-  'lineWidth'].forEach((prop)=>{        
-    style.value[prop] = (activeNodes.value[0] as Node).getStyle(prop)
+    'fillColor',
+    'borderColor',
+    'lineColor',
+    'color',
+    'borderWidth',
+    'lineStyle',
+    'shape',
+    'lineWidth',
+    'textAlign'
+  ]
+  .forEach((prop) => {
+      style.value[prop] = (activeNodes.value[0] as Node).getStyle(prop)
+    })
+
+  if(!['left','right','center','justify'].includes(style.value.textAlign)){
+    style.value.textAlign = 'left'
+  }
+  style.value.textLineThrough = false
+  style.value.textUnderline = false
+  style.value.fontWeight = false
+  style.value.fontStyle = false;
+
+  ['fontStyle', 'fontWeight', 'textDecoration'].forEach((prop) => {
+    const val = (activeNodes.value[0] as Node).getStyle(prop)
+    if (prop === 'fontWeight' && val === 'bold') {
+      style.value.fontWeight = true
+    } else if (prop === 'fontStyle' && val === 'italic') {
+      style.value.fontStyle = true
+    } else if (prop === 'textDecoration' && val === 'underline') {
+      style.value.textUnderline = true
+    } else if (prop === 'textDecoration' && val === 'line-through') {
+      style.value.textLineThrough = true
+    } else if (prop === 'textDecoration' && val.split(' ').length === 2) {
+      style.value.textLineThrough = true
+      style.value.textUnderline = true
+    }
   })
 }
 </script>
@@ -187,8 +251,8 @@ function initSidebar(){
               <div class="flex justify-between flex-items-center mb">
                 <span>边框粗细</span>
                 <div class="w22 h8 rd border ">
-                  <a-input-number class="h-full w-full bg-white" :min="1" :max="5" v-model="style.borderWidth" 
-                  @change="activeNodes[0].setStyle('borderWidth',style.borderWidth)"/>
+                  <a-input-number class="h-full w-full bg-white" :min="1" :max="5" v-model="style.borderWidth"
+                    @change="activeNodes[0].setStyle('borderWidth', style.borderWidth)" />
                 </div>
               </div>
               <div>
@@ -217,14 +281,14 @@ function initSidebar(){
               <div class="flex justify-between flex-items-center mb">
                 <span>分支粗细</span>
                 <div class="w22 h8 rd border ">
-                  <a-input-number :default-value="2" class="h-full w-full bg-white" :min="1" :max="5" v-model="style.lineWidth" 
-                  @change="activeNodes[0].setStyle('lineWidth',style.lineWidth)"/>
+                  <a-input-number :default-value="2" class="h-full w-full bg-white" :min="1" :max="5"
+                    v-model="style.lineWidth" @change="activeNodes[0].setStyle('lineWidth', style.lineWidth)" />
                 </div>
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>分支类型</span>
                 <a-radio-group type="button" size="large" class="w22 h8 border rd" v-model="style.lineStyle"
-                @change="activeNodes[0].setStyle('lineStyle',style.lineStyle)">
+                  @change="activeNodes[0].setStyle('lineStyle', style.lineStyle)">
                   <a-radio value="curve" class="branch">
                     <div class="h6 flex flex-items-center">
                       <icon-font type="icon-siweidaotu1" :size="18"></icon-font>
@@ -251,40 +315,41 @@ function initSidebar(){
       <a-tab-pane key="2">
         <template #title>文本</template>
         <div style="margin-left: 20px; margin-right: 18px;">
-          <a-checkbox-group class="mb5 flex" v-model:model-value="style.fontSettings" @change="console.log(style.fontSettings)">
-            <a-checkbox value="1">
+          <div class="mb5 flex justify-around">
+            <a-checkbox v-model="style.fontWeight" @change="handleFontWeight">
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
                   <icon-bold class="w4.5 h4.5 icon-black" />
                 </a-tag>
               </template>
             </a-checkbox>
-            <a-checkbox value="2">
+            <a-checkbox v-model="style.fontStyle" @change="handleFontStyle">
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
                   <icon-italic class="w4.5 h4.5 icon-black" />
                 </a-tag>
               </template>
             </a-checkbox>
-            <a-checkbox value="3">
+            <a-checkbox v-model="style.textUnderline" @change="handleTextDecoration">
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
                   <icon-strikethrough class="w4.5 h4.5 icon-black" />
                 </a-tag>
               </template>
             </a-checkbox>
-            <a-checkbox value="4">
+            <a-checkbox v-model="style.textLineThrough" @change="handleTextDecoration">
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
                   <icon-underline class="w4.5 h4.5 icon-black" />
                 </a-tag>
               </template>
             </a-checkbox>
-          </a-checkbox-group>
+          </div>
 
           <div class="flex justify-between flex-items-center mb">
             <span>字号</span>
-            <a-select class="w22 h8" v-model="style.fontSize" :trigger-props="{ autoFitPopupMinWidth: true }">
+            <a-select class="w22 h8" v-model="style.fontSize" :trigger-props="{ autoFitPopupMinWidth: true }"
+              @change="activeNodes[0].setStyle('fontSize', style.fontSize)">
               <a-option v-for="(item, idx) in fontSizeList" :key="idx" :label="item.label" :value="item.value" />
             </a-select>
           </div>
@@ -303,17 +368,17 @@ function initSidebar(){
 
         <a-collapse :default-active-key="[1, 2]" :bordered="false">
           <a-collapse-item header="对齐方式" :style="customStyle" :key="1">
-            <a-radio-group type="button" size="large" class="mb flex rd border" v-model="style.alignMode">
+            <a-radio-group type="button" size="large" class="mb flex rd border" v-model="style.textAlign" @change="activeNodes[0].setStyle('textAlign',style.textAlign)">
               <a-radio value="left">
                 <icon-align-left class="w4 h4 icon-black " />
               </a-radio>
-              <a-radio value="center">
+              <a-radio value="center" >
                 <icon-align-center class="w4 h4 icon-black " />
               </a-radio>
               <a-radio value="right">
                 <icon-align-right class="w4 h4 icon-black " />
               </a-radio>
-              <a-radio value="all">
+              <a-radio value="justify">
                 <icon-menu class="w4 h4 icon-black " />
               </a-radio>
             </a-radio-group>
