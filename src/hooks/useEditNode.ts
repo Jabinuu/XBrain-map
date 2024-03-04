@@ -31,7 +31,10 @@ export function useEditNode() {
 
   function onNodeActive(manipulateNodes: any) {
     activeNodes.value = [...manipulateNodes[0]]
-    initSidebar()
+    if (activeNodes.value.length) {
+      initSidebar()
+
+    }
   }
 
   function initSidebar() {
@@ -47,7 +50,9 @@ export function useEditNode() {
       'textAlign'
     ]
       .forEach((prop) => {
-        style.value[prop] = (activeNodes.value[0] as Node).getStyle(prop)
+        activeNodes.value.forEach((node: Node) => {
+          style.value[prop] = node.getStyle(prop)
+        })
       })
 
     if (!['left', 'right', 'center', 'justify'].includes(style.value.textAlign)) {
@@ -76,51 +81,69 @@ export function useEditNode() {
   }
 
   function handleNodeFillChange(val: string) {
-    console.log('222', activeNodes.value);
     style.value.fillColor = val;
-    (activeNodes.value[0] as Node).setStyle('fillColor', val)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('fillColor', val)
+    })
+    // (activeNodes.value[0] as Node).setStyle('fillColor', val)
   }
 
   function handleBorderColorChange(val: string) {
     style.value.borderColor = val;
-    (activeNodes.value[0] as Node).setStyle('borderColor', val)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('borderColor', val)
+    })
+    // (activeNodes.value[0] as Node).setStyle('borderColor', val)
   }
 
   function handleLineColorChange(val: any) {
     if (val === 'transparent') return
     style.value.lineColor = val;
-    (activeNodes.value[0] as Node).setStyle('lineColor', val)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('lineColor', val)
+    })
+    // (activeNodes.value[0] as Node).setStyle('lineColor', val)
   }
 
   function handleFontColorChange(val: any) {
     if (val === 'transparent') return
     style.value.color = val;
-    (activeNodes.value[0] as Node).setStyle('color', val)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('color', val)
+    })
+    // (activeNodes.value[0] as Node).setStyle('color', val)
   }
 
   function handleFontWeight(val: any) {
-    let _val
+    let _val: string
     if (val) {
       _val = 'bold'
     } else {
       _val = 'normal'
     }
-    activeNodes.value[0].setStyle('fontWeight', _val)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('fontWeight', _val)
+    })
+    // activeNodes.value[0].setStyle('fontWeight', _val)
   }
 
   function handleFontStyle(val: any) {
-    let _val
+    let _val: string
     if (val) {
       _val = 'italic'
     } else {
       _val = 'normal'
     }
-    activeNodes.value[0].setStyle('fontStyle', _val)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('fontStyle', _val)
+    })
+    // activeNodes.value[0].setStyle('fontStyle', _val)
   }
 
   function handleTextDecoration() {
     let val = ''
     const { textLineThrough, textUnderline } = style.value
+
     if (textUnderline && !textLineThrough) {
       val = 'underline'
     } else if (!textUnderline && textLineThrough) {
@@ -128,28 +151,47 @@ export function useEditNode() {
     } else if (textUnderline && textLineThrough) {
       val = 'underline line-through'
     }
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('textDecoration', val)
+    })
 
-    activeNodes.value[0].setStyle('textDecoration', val)
+
+    // activeNodes.value[0].setStyle('textDecoration', val)
   }
 
   function handleBorderWidthChange() {
-    activeNodes.value[0].setStyle('borderWidth', style.value.borderWidth)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('borderWidth', style.value.borderWidth)
+    })
+    // activeNodes.value[0].setStyle('borderWidth', style.value.borderWidth)
   }
 
   function handleLineWidthChange() {
-    activeNodes.value[0].setStyle('lineWidth', style.value.lineWidth)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('lineWidth', style.value.lineWidth)
+    })
+    // activeNodes.value[0].setStyle('lineWidth', style.value.lineWidth)
   }
 
   function handleLineStyleChange() {
-    activeNodes.value[0].setStyle('lineStyle', style.value.lineStyle)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('lineStyle', style.value.lineStyle)
+    })
+    // activeNodes.value[0].setStyle('lineStyle', style.value.lineStyle)
   }
 
   function handleFontSizeChange() {
-    activeNodes.value[0].setStyle('fontSize', style.value.fontSize)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('fontSize', style.value.fontSize)
+    })
+    // activeNodes.value[0].setStyle('fontSize', style.value.fontSize)
   }
 
   function handleTextAlignChange() {
-    activeNodes.value[0].setStyle('textAlign', style.value.textAlign)
+    activeNodes.value.forEach((node: Node) => {
+      node.setStyle('textAlign', style.value.textAlign)
+    })
+    // activeNodes.value[0].setStyle('textAlign', style.value.textAlign)
   }
 
   return {

@@ -6,11 +6,11 @@ import ToolbarTopLeft from './components/global/ToolbarTopLeft.vue';
 import ToolbarTopRight from './components/global/ToolbarTopRight.vue';
 import GroupPrompt from './components/global/GroupPrompt.vue';
 import NodeToolbar from './components/node/NodeToolbar.vue';
-import Node from '^/src/node/Node';
 import bus from '@/utils/bus';
 import Sidebar from './components/sidebar/Sidebar.vue';
 import AddLink from '@/components/AddLink.vue';
 import { useContextMenu } from '@/hooks/useContextMenu';
+import Node from '~/node/Node';
 
 export interface MenuListItem {
   text: string
@@ -21,6 +21,23 @@ export interface MenuListItem {
   action?: () => void
 }
 
+enum EnumCommandName {
+  INSERT_CHILD_NODE = 'INSERT_CHILD_NODE',
+  INSERT_SIBLING_NODE = 'INSERT_SIBLING_NODE',
+  DELETE_NODE = 'DELETE_NODE',
+  DELETE_SINGLE_NODE = 'DELETE_SINGLE_NODE',
+  SET_NODE_EXPAND = 'SET_NODE_EXPAND',
+  SET_NODE_ACTIVE = 'SET_NODE_ACTIVE',
+  SET_NODE_DATA = 'SET_NODE_DATA',
+  SET_NODE_EDIT = 'SET_NODE_EDIT',
+  SET_NODE_TEXT = 'SET_NODE_TEXT',
+  CLEAR_ACTIVE_NODE = 'CLEAR_ACTIVE_NODE',
+  RESIZE_NODE = 'RESIZE_NODE',
+  UNDO = 'UNDO',
+  REDO = 'REDO',
+  SET_NODE_STYLE = 'SET_NODE_STYLE'
+}
+
 let brainMap: BrainMap
 let showNodeToolbar = ref(false)
 const brainMapContainer = ref()
@@ -28,6 +45,7 @@ const mainContainer = ref()
 const eventList = ['node_active', 'clear_active', '_contextmenu', 'draw_mousedown', 'node_mousedown']
 const showSidebar = ref(false)
 const showAddLink = ref(false)
+let activeNodes: Node[] = []
 
 provide('_showSidebar', showSidebar)
 onMounted(() => {
@@ -79,7 +97,9 @@ function bindEvent() {
     showSidebar.value = e
   })
 
-  bus?.on('node_active', () => {
+  bus?.on('node_active', (manipulateNodes: any) => {
+
+    activeNodes = [...manipulateNodes[0]]
     // 激活节点时显示编辑工具栏
     showNodeToolbar.value = true
     nextTick(() => {
@@ -151,19 +171,21 @@ function openContextMenu() {
       text: '子级',
       key: 'child',
       action() {
-        console.log('插入子级');
+        brainMap.execCommand(EnumCommandName.INSERT_CHILD_NODE, [...activeNodes])
+        hide()
       }
     }, {
       text: '父级',
       key: 'parent',
       action() {
-        console.log('插入父级');
+        hide()
       }
     }, {
       text: '同级',
       key: 'pair',
       action() {
-        console.log('插入同级');
+        brainMap.execCommand(EnumCommandName.INSERT_SIBLING_NODE, [...activeNodes])
+        hide()
       }
     }],
     action() {
@@ -173,7 +195,9 @@ function openContextMenu() {
     text: '折叠',
     key: 'expand',
     action() {
-      console.log('折叠');
+      if (!activeNodes.length) return
+      brainMap.execCommand(EnumCommandName.SET_NODE_EXPAND, [...activeNodes])
+      hide()
     },
   }, {
     text: '剪切',
@@ -197,13 +221,19 @@ function openContextMenu() {
     text: '删除',
     key: 'remove',
     action() {
-      console.log('删除');
+      brainMap.execCommand(EnumCommandName.DELETE_NODE, [...activeNodes])
+      hide()
     },
   }, {
     text: '删除单个节点',
     key: 'removeSingle',
     action() {
-      console.log('删除单个节点');
+      if (activeNodes.length > 1) {
+        alert('没有激活节点或多个激活节点不支持删除单个节点~')
+        return
+      }
+      brainMap.execCommand(EnumCommandName.DELETE_SINGLE_NODE, [...activeNodes])
+      hide()
     },
   }]
 

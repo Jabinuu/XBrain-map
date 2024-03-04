@@ -269,7 +269,8 @@ function onSelectFontSize(val: any) {
                   </a-tag>
                 </template>
               </a-checkbox>
-              <a-checkbox value="3" :style="{ marginRight: 0, paddingLeft: '4px' }" @change="handleTextDecoration">
+              <a-checkbox value="3" v-model="style.textLineThrough" :style="{ marginRight: 0, paddingLeft: '4px' }"
+                @change="handleTextDecoration">
 
                 <template #checkbox="{ checked }">
                   <a-tag :checked="checked" checkable color="arcoblue">
@@ -277,7 +278,8 @@ function onSelectFontSize(val: any) {
                   </a-tag>
                 </template>
               </a-checkbox>
-              <a-checkbox value="4" :style="{ marginRight: 0, paddingLeft: '4px' }" @change="handleTextDecoration">
+              <a-checkbox value="4" v-model="style.textUnderline" :style="{ marginRight: 0, paddingLeft: '4px' }"
+                @change="handleTextDecoration">
 
                 <template #checkbox="{ checked }">
                   <a-tag :checked="checked" checkable color="arcoblue">
