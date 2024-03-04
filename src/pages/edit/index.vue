@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, provide } from 'vue'
-import BrainMap from '^/index'
-import dataSource from '~/example'
+import BrainMap from 'brain-map/index'
+import dataSource from 'brain-map/src/example'
 import ToolbarTopLeft from './components/global/ToolbarTopLeft.vue';
 import ToolbarTopRight from './components/global/ToolbarTopRight.vue';
 import GroupPrompt from './components/global/GroupPrompt.vue';
@@ -10,7 +10,7 @@ import bus from '@/utils/bus';
 import Sidebar from './components/sidebar/Sidebar.vue';
 import AddLink from '@/components/AddLink.vue';
 import { useContextMenu } from '@/hooks/useContextMenu';
-import Node from '~/node/Node';
+import Node from 'brain-map/src/node/Node';
 
 export interface MenuListItem {
   text: string
@@ -65,7 +65,7 @@ function init() {
         lineStyle: 'curve',
       }
     })
-    BrainMap.usePlugin('Select', brainMap)
+    // BrainMap.usePlugin('Select', brainMap)
   }
 
   // 转发事件

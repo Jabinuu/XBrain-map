@@ -1,6 +1,6 @@
 import { ref, onMounted } from 'vue'
 import bus from '@/utils/bus'
-import Node from '^/src/node/Node'
+import Node from 'brain-map/dist/type/index'
 
 export function useEditNode() {
   const activeNodes = ref()
