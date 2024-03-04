@@ -2,25 +2,17 @@
 import LayoutSelect from '@/components/LayoutSelect.vue';
 import {
   IconTags, IconAttachment, IconSettings, IconMindMapping, IconBold, IconCheck,
-  IconItalic, IconStrikethrough, IconUnderline, IconAlignCenter, IconAlignLeft, IconAlignRight, IconMenu, IconFontColors
+  IconItalic, IconStrikethrough, IconUnderline, IconAlignCenter, IconAlignLeft,
+  IconAlignRight, IconMenu, IconFontColors
 } from '@arco-design/web-vue/es/icon';
 import bus from '@/utils/bus';
 import IconFont from '@/components/IconFont.vue';
 import IconBtn from '@/components/IconBtn.vue';
+import { useEditNode } from '@/hooks/useEditNode';
 
 const hasTooltip = ref<boolean | undefined>(undefined)
-const branchType = ref<'curve' | 'straight'>('curve')
-const lineWidth = ref(2)
-const lineColor = ref('#000000')
-const nodeShape = ref<'rectangle' | 'line' | 'capsule'>('rectangle')
-const fillColor = ref('transparent')
-const borderColor = ref('#000000')
-const borderWidth = ref(2)
-const fontStyle = ref([])
-const alignMode = ref<'left' | 'center' | 'right' | 'all'>('left')
+
 const fontSizeList = ref([12, 14, 16, 18, 22, 24, 32, 36, 48, 64, 92])
-const fontSize = ref(14)
-const fontColor = ref('#000000')
 const priority = ref('')
 const progress = ref('')
 const flag = ref('')
@@ -28,18 +20,36 @@ const tagPriority = ['icon-youxianji1', 'icon-youxianji2', 'icon-youxianji3', 'i
 const tagProgress = ['icon-shijian', 'icon-chart18', 'icon-chart14', 'icon-chart12', 'icon-chart58', 'icon-chart78', 'icon-wuuiconxuan']
 const tagFlag = ['icon-qizhi1', 'icon-qizhi2', 'icon-qizhi3', 'icon-qizhi4', 'icon-qizhi5', 'icon-qizhi6', 'icon-qizhi7']
 
+const {
+  style,
+  isFillTransparent,
+  isBorderTransparent,
+  handleNodeFillChange,
+  handleBorderColorChange,
+  handleLineColorChange,
+  handleFontColorChange,
+  handleFontWeight,
+  handleFontStyle,
+  handleTextDecoration,
+  handleBorderWidthChange,
+  handleLineWidthChange,
+  handleLineStyleChange,
+  handleFontSizeChange,
+  handleTextAlignChange
+} = useEditNode()
+
 function onClickSettingBtn() {
   hasTooltip.value = false
   bus.emit('sidebarVisibleChange', true)
 }
 
-function handleLineColorChange(val: any) {
-  if (val === 'transparent') return
-  lineColor.value = val
+function showCheckIcon(val: string) {
+  return style.value.textAlign === val ? 'show' : 'hidden'
 }
 
-function showCheckIcon(val: string) {
-  return alignMode.value === val ? 'show' : 'hidden'
+function onSelectFontSize(val: any) {
+  style.value.fontSize = val
+  handleFontSizeChange()
 }
 
 </script>
@@ -58,15 +68,18 @@ function showCheckIcon(val: string) {
         </layout-select>
         <a-dropdown>
           <a-tooltip>
+
             <template #content>分支</template>
             <div class="cursor-pointer branch-btn pl2 pr2 rd h-full flex flex-items-center">
-              <icon-font v-if="branchType === 'curve'" type="icon-siweidaotu1" :size="18"></icon-font>
+              <icon-font v-if="style.lineStyle === 'curve'" type="icon-siweidaotu1" :size="18"></icon-font>
               <icon-mind-mapping v-else class="icon-black w4.5 h4.5"></icon-mind-mapping>
             </div>
           </a-tooltip>
+
           <template #content>
             <div class="w30 pl1 pr1">
-              <a-radio-group type="button" class="bg-white" v-model:model-value="branchType">
+              <a-radio-group type="button" class="bg-white" v-model:model-value="style.lineStyle"
+                @change="handleLineStyleChange">
                 <a-radio value="curve">
                   <icon-font type="icon-siweidaotu1" :size="18"></icon-font>
                 </a-radio>
@@ -76,9 +89,10 @@ function showCheckIcon(val: string) {
               </a-radio-group>
               <a-divider class="mt0 mb2" :size="2"></a-divider>
               <div class="flex justify-between rd">
-                <a-input-number v-model="lineWidth" :min="1" :max="5" class="w18 rd" />
+                <a-input-number v-model="style.lineWidth" :min="1" :max="5" class="w18 rd"
+                  @change="handleLineWidthChange" />
                 <a-popover trigger="click" position="tr" class="w58" :arrow-style="{ visibility: 'hidden' }">
-                  <div class="h8 w8 rd cursor-pointer" :style="{ backgroundColor: lineColor }"></div>
+                  <div class="h8 w8 rd cursor-pointer" :style="{ backgroundColor: style.lineColor }"></div>
                   <template #content>
                     <color-picker @color-select-change="handleLineColorChange"></color-picker>
                   </template>
@@ -92,15 +106,16 @@ function showCheckIcon(val: string) {
 
         <a-dropdown>
           <a-tooltip mini :arrow-style="{ width: 0 }" backgroundColor="rgba(0,0,0,0.7)">
+
             <template #content>节点形状</template>
             <div class="node-shape-btn-wrap w8 h8 rd p1 pl2 pr2 cursor-pointer">
-              <div class="node-shape-btn h6" :class="nodeShape">
+              <div class="node-shape-btn h6" :class="style.shape">
               </div>
             </div>
           </a-tooltip>
 
           <template #content>
-            <a-radio-group :style="{ 'margin': '0 4px' }" v-model="nodeShape">
+            <a-radio-group :style="{ 'margin': '0 4px' }" v-model="style.shape">
               <a-radio value="line" :style="{ 'margin-right': '8px', padding: '5px 5px' }" class="rd">
                 <template #radio>
                   <div class="btn-background line w4.5 h4.5">
@@ -108,12 +123,14 @@ function showCheckIcon(val: string) {
                 </template>
               </a-radio>
               <a-radio value="capsule" :style="{ 'margin-right': '8px', padding: '5px 5px' }" class="rd">
+
                 <template #radio>
                   <div class="btn-background capsule w4.5 h4.5 ">
                   </div>
                 </template>
               </a-radio>
               <a-radio value="rectangle" :style="{ 'margin-right': '8px', padding: '5px 5px' }" class="rd">
+
                 <template #radio>
                   <div class="btn-background rectangle w4.5 h4.5 ">
                   </div>
@@ -126,7 +143,7 @@ function showCheckIcon(val: string) {
         <a-popover trigger="click" class="w58" :position="'br'" :arrow-style="{ visibility: 'hidden' }">
           <a-tooltip class="opacity80 fs-0.9">
             <div class="w8 h8 flex flex-items-center justify-center cursor-pointer ">
-              <div v-if="fillColor === 'transparent'">
+              <div v-if="isFillTransparent">
                 <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
                   <defs>
                     <pattern id="rect" viewBox="0,0,8,8" width="35%" height="35%">
@@ -140,23 +157,25 @@ function showCheckIcon(val: string) {
                 </svg>
               </div>
               <div v-else class="inset-shadow">
-                <div :style="{ width: '16px', height: '16px', backgroundColor: fillColor, borderRadius: '50%' }">
+                <div :style="{ width: '16px', height: '16px', backgroundColor: style.fillColor, borderRadius: '50%' }">
                 </div>
               </div>
             </div>
+
             <template #content>填充色</template>
           </a-tooltip>
+
           <template #content>
-            <color-picker @color-select-change="(val) => fillColor = val"></color-picker>
+            <color-picker @color-select-change="handleNodeFillChange"></color-picker>
           </template>
         </a-popover>
 
         <a-popover trigger="click" :position="'br'" :arrow-style="{ visibility: 'hidden' }"
           :content-style="{ padding: '4px 6px 6px' }">
           <icon-btn :hasTooltip="undefined">
+
             <template #icon>
-              <svg v-if="borderColor !== 'transparent'" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
-                <title>编组 10</title>
+              <svg v-if="!isBorderTransparent" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
                 <g id="控件" stroke="none" fill="none" fill-rule="evenodd">
                   <g id="Z图标/2.编辑器/2.格式/描边" transform="translate(-6.000000, -8.000000)">
                     <g id="编组-10" transform="translate(6.000000, 8.000000)">
@@ -164,14 +183,13 @@ function showCheckIcon(val: string) {
                       </circle>
                     </g>
                     <g id="编组-11" transform="translate(6.000000, 8.000000)">
-                      <circle id="椭圆形2" :stroke="borderColor" fill="none" cx="8" cy="8" r="6.5" stroke-width="2">
+                      <circle id="椭圆形2" :stroke="style.borderColor" fill="none" cx="8" cy="8" r="6.5" stroke-width="2">
                       </circle>
                     </g>
                   </g>
                 </g>
               </svg>
               <svg v-else width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
-                <title>透明环</title>
                 <g id="控件" stroke="none" stroke-width="0.5" fill="none" fill-rule="evenodd">
                   <g id="透明环" transform="translate(-0.000000, 0.000000)">
                     <path
@@ -184,17 +202,18 @@ function showCheckIcon(val: string) {
                 </g>
               </svg>
             </template>
+
             <template #tooltipContent>节点描边</template>
           </icon-btn>
 
           <template #content>
             <div class=" flex">
-              <a-input-number v-model="borderWidth" :min="1" :max="10" :style="{ width: '70px', marginRight: '10px' }"
-                class="rd" />
+              <a-input-number v-model="style.borderWidth" :min="1" :max="5"
+                :style="{ width: '70px', marginRight: '10px' }" class="rd" @change="handleBorderWidthChange" />
               <a-popover trigger="click" class="w58" :position="'br'" :arrow-style="{ visibility: 'hidden' }">
                 <div class="p0.5 border rd">
-                  <div v-if="borderColor !== 'transparent'" class="h7 w7 rd cursor-pointer"
-                    :style="{ backgroundColor: borderColor }"></div>
+                  <div v-if="!isBorderTransparent" class="h7 w7 rd cursor-pointer"
+                    :style="{ backgroundColor: style.borderColor }"></div>
                   <div v-else class="h7 w7 rd cursor-pointer">
                     <svg width="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0 30L30 0" stroke="#D0021B" fill="none" fill-rule="evenodd" stroke-linecap="square">
@@ -203,7 +222,7 @@ function showCheckIcon(val: string) {
                   </div>
                 </div>
                 <template #content>
-                  <color-picker @color-select-change="(val) => borderColor = val"></color-picker>
+                  <color-picker @color-select-change="handleBorderColorChange"></color-picker>
                 </template>
               </a-popover>
             </div>
@@ -214,9 +233,10 @@ function showCheckIcon(val: string) {
 
         <a-dropdown trigger="click" :arrow-style="{ visibility: 'hidden' }" position="bl">
           <icon-btn>
+
             <template #icon>
-              <svg t="1705589367596" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                p-id="4419" width="200" height="200">
+              <svg t="1705589367596" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" p-id="4419" width="200" height="200">
                 <path
                   d="M384 810.666667a42.666667 42.666667 0 0 1 42.666667-42.666667h170.666666a42.666667 42.666667 0 1 1 0 85.333333h-170.666666a42.666667 42.666667 0 0 1-42.666667-42.666666z"
                   fill="#14181F" p-id="4420"></path>
@@ -228,60 +248,64 @@ function showCheckIcon(val: string) {
                   fill="#14181F" p-id="4422"></path>
               </svg>
             </template>
+
             <template #tooltipContent>文字样式</template>
           </icon-btn>
 
           <template #content>
             <div class="ml1 mr1">
-              <a-checkbox-group v-model:model-value="fontStyle" @change="console.log(fontStyle)">
-                <a-checkbox value="1" :style="{ marginRight: 0, paddingLeft: 0 }">
-                  <template #checkbox="{ checked }">
-                    <a-tag :checked="checked" checkable color="arcoblue">
-                      <icon-bold class="w4.5 h4.5 icon-black" />
-                    </a-tag>
-                  </template>
-                </a-checkbox>
-                <a-checkbox value="2" :style="{ marginRight: 0, paddingLeft: '4px' }">
-                  <template #checkbox="{ checked }">
-                    <a-tag :checked="checked" checkable color="arcoblue">
-                      <icon-italic class="w4.5 h4.5 icon-black" />
-                    </a-tag>
-                  </template>
-                </a-checkbox>
-                <a-checkbox value="3" :style="{ marginRight: 0, paddingLeft: '4px' }">
-                  <template #checkbox="{ checked }">
-                    <a-tag :checked="checked" checkable color="arcoblue">
-                      <icon-strikethrough class="w4.5 h4.5 icon-black" />
-                    </a-tag>
-                  </template>
-                </a-checkbox>
-                <a-checkbox value="4" :style="{ marginRight: 0, paddingLeft: '4px' }">
-                  <template #checkbox="{ checked }">
-                    <a-tag :checked="checked" checkable color="arcoblue">
-                      <icon-underline class="w4.5 h4.5 icon-black" />
-                    </a-tag>
-                  </template>
-                </a-checkbox>
-              </a-checkbox-group>
+              <a-checkbox value="1" :style="{ marginRight: 0, paddingLeft: 0 }" @change="handleFontWeight">
+                <template #checkbox="{ checked }">
+                  <a-tag :checked="checked" checkable color="arcoblue">
+                    <icon-bold class="w4.5 h4.5 icon-black" />
+                  </a-tag>
+                </template>
+              </a-checkbox>
+              <a-checkbox value="2" :style="{ marginRight: 0, paddingLeft: '4px' }" @change="handleFontStyle">
+
+                <template #checkbox="{ checked }">
+                  <a-tag :checked="checked" checkable color="arcoblue">
+                    <icon-italic class="w4.5 h4.5 icon-black" />
+                  </a-tag>
+                </template>
+              </a-checkbox>
+              <a-checkbox value="3" :style="{ marginRight: 0, paddingLeft: '4px' }" @change="handleTextDecoration">
+
+                <template #checkbox="{ checked }">
+                  <a-tag :checked="checked" checkable color="arcoblue">
+                    <icon-strikethrough class="w4.5 h4.5 icon-black" />
+                  </a-tag>
+                </template>
+              </a-checkbox>
+              <a-checkbox value="4" :style="{ marginRight: 0, paddingLeft: '4px' }" @change="handleTextDecoration">
+
+                <template #checkbox="{ checked }">
+                  <a-tag :checked="checked" checkable color="arcoblue">
+                    <icon-underline class="w4.5 h4.5 icon-black" />
+                  </a-tag>
+                </template>
+              </a-checkbox>
 
               <a-divider :size="2" :margin="4"></a-divider>
               <div class="flex">
-                <a-dropdown trigger="click" :content-style="{ maxHeight: '500px' }">
+                <a-dropdown trigger="click" :content-style="{ maxHeight: '500px' }" @select="onSelectFontSize">
                   <a-tooltip class="fs-0.9 opacity70" :arrow-style="{ width: 0 }" mini>
                     <div
                       class=" w12 flex flex-items-center justify-center p1 hover:bg-hover cursor-pointer rd font-size-4 ">
-                      <span>{{ fontSize }}</span>
+                      <span>{{ style.fontSize }}</span>
                       <span class=" font-bold">px</span>
                     </div>
+
                     <template #content>
                       字号
                     </template>
                   </a-tooltip>
+
                   <template #content>
-                    <a-doption v-for="(item, idx) in fontSizeList" :key="idx" class="font-size-4"
-                      @click="fontSize = item">
+                    <a-doption v-for="(item, idx) in fontSizeList" :key="idx" :value="item" class="font-size-4">
                       <template #icon>
-                        <icon-check class="w4.5 h4.5" :style="{ visibility: fontSize === item ? 'show' : 'hidden' }" />
+                        <icon-check class="w4.5 h4.5"
+                          :style="{ visibility: style.fontSize === item ? 'show' : 'hidden' }" />
                       </template>
                       {{ `${item}px` }}
                     </a-doption>
@@ -289,56 +313,68 @@ function showCheckIcon(val: string) {
                 </a-dropdown>
                 <a-popover trigger="click" class="w58" :position="'br'" :arrow-style="{ visibility: 'hidden' }">
                   <icon-btn>
+
                     <template #icon>
-                      <icon-font-colors class="w4.5 h4.5" :style="{ color: fontColor }" />
+                      <icon-font-colors class="w4.5 h4.5" :style="{ style: style.color }" />
                     </template>
+
                     <template #tooltipContent>字色</template>
                   </icon-btn>
+
                   <template #content>
-                    <color-picker @color-select-change="(val) => fontColor = val"></color-picker>
+                    <color-picker @color-select-change="handleFontColorChange"></color-picker>
                   </template>
                 </a-popover>
 
-                <a-dropdown trigger="click" :content-style="{ paddingLeft: '4px' }">
+                <a-dropdown trigger="click" :content-style="{ paddingLeft: '4px' }" @select="handleTextAlignChange">
                   <icon-btn>
+
                     <template #icon>
-                      <icon-align-left v-if="alignMode === 'left'" class="w4.5 h4.5 icon-black" />
-                      <icon-align-center v-else-if="alignMode === 'center'" class="w4.5 h4.5 icon-black" />
-                      <icon-align-right v-else-if="alignMode === 'right'" class="w4.5 h4.5 icon-black" />
+                      <icon-align-left v-if="style.textAlign === 'left'" class="w4.5 h4.5 icon-black" />
+                      <icon-align-center v-else-if="style.textAlign === 'center'" class="w4.5 h4.5 icon-black" />
+                      <icon-align-right v-else-if="style.textAlign === 'right'" class="w4.5 h4.5 icon-black" />
                       <icon-menu v-else class="w4.5 h4.5 icon-black" />
                     </template>
+
                     <template #tooltipContent>
                       对齐方式
                     </template>
                   </icon-btn>
 
                   <template #content>
-                    <a-doption @click="alignMode = 'left'">
+                    <a-doption @click="style.textAlign = 'left'">
                       <template #icon>
                         <icon-check :style="{ visibility: showCheckIcon('left') }" class="w4.5 h4.5 mr2" />
                         <icon-align-left class="w4.5 h4.5" />
                       </template>
+
                       <template #default>左对齐</template>
                     </a-doption>
-                    <a-doption @click="alignMode = 'center'">
+                    <a-doption @click="style.textAlign = 'center'">
+
                       <template #icon>
                         <icon-check :style="{ visibility: showCheckIcon('center') }" class="w4.5 h4.5 mr2" />
                         <icon-align-center class="w4.5 h4.5" />
                       </template>
+
                       <template #default>居中对齐</template>
                     </a-doption>
-                    <a-doption @click="alignMode = 'right'">
+                    <a-doption @click="style.textAlign = 'right'">
+
                       <template #icon>
                         <icon-check :style="{ visibility: showCheckIcon('right') }" class="w4.5 h4.5 mr2" />
                         <icon-align-right class="w4.5 h4.5" />
                       </template>
+
                       <template #default>右对齐</template>
                     </a-doption>
-                    <a-doption @click="alignMode = 'all'">
+                    <a-doption @click="style.textAlign = 'all'">
+
                       <template #icon>
                         <icon-check :style="{ visibility: showCheckIcon('all') }" class="w4.5 h4.5 mr2" />
                         <icon-menu class="w4.5 h4.5" />
                       </template>
+
                       <template #default>两端对齐</template>
                     </a-doption>
                   </template>
@@ -351,11 +387,14 @@ function showCheckIcon(val: string) {
 
         <a-popover trigger="click" :arrow-style="{ width: 0 }" position="bl" :content-style="{ width: '240px' }">
           <icon-btn>
+
             <template #icon>
               <icon-tags class="w4.5 h4.5 icon-black" />
             </template>
+
             <template #tooltipContent>添加标记</template>
           </icon-btn>
+
           <template #content>
             <div class="mb">
               <div>优先级</div>
@@ -383,9 +422,11 @@ function showCheckIcon(val: string) {
 
         <a-popover trigger="click" :arrow-style="{ width: 0 }">
           <icon-btn>
+
             <template #icon>
               <icon-attachment class="w4.5 h4.5 icon-black" />
             </template>
+
             <template #tooltipContent>添加链接</template>
           </icon-btn>
 
@@ -399,9 +440,11 @@ function showCheckIcon(val: string) {
         <a-divider direction="vertical" class="ml1 mr1 h5"></a-divider>
 
         <icon-btn @click="onClickSettingBtn" :has-tooltip="hasTooltip">
+
           <template #icon>
             <icon-settings class="w4.5 h4.5 icon-black" />
           </template>
+
           <template #tooltipContent>打开设置</template>
         </icon-btn>
 

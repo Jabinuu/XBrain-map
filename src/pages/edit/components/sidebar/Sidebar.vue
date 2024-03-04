@@ -5,13 +5,13 @@ import LayoutSelect from '@/components/LayoutSelect.vue'
 import ShapeSelect from './ShapeSelect.vue';
 import ColorPicker from '@/components/ColorPicker.vue'
 import IconFont from '@/components/IconFont.vue';
-import Node from '^/src/node/Node'
-import { onMounted } from 'vue';
+import { useEditNode } from '@/hooks/useEditNode';
 
 defineProps<{
   isVisible?: boolean
 }>()
 
+// 折叠板自定义样式
 const customStyle = {
   borderRadius: '6px',
   marginBottom: '12px',
@@ -54,137 +54,36 @@ const fontSizeList = [{
   label: '92px'
 }]
 
+// 手动设置节点尺寸开关
 const resizeNode = ref(true)
+// 彩虹分支开关
 const rainbowBranch = ref(true)
+// 分支随层数变细开关
 const borderThinByLayer = ref(false)
-const activeNodes = ref()
-
-const style = ref<Record<string, any>>({
-  fontSize: -1,
-  fillColor: '',
-  borderColor: '',
-  lineColor: '',
-  color: '',
-  borderWidth: -1,
-  lineStyle: '',
-  fontStyle: false,
-  textUnderline: false,
-  textLineThrough: false,
-  fontWeight: false,
-  textAlign: 'left',
-  shape: '',
-  lineWidth: -1
-})
-const isFillTransparent = computed(() => style.value.fillColor === 'transparent')
-const isBorderTransparent = computed(() => style.value.borderColor === 'transparent')
-
-onMounted(() => {
-  bus.on('node_active', (manipulateNodes: any) => {
-    activeNodes.value = [...manipulateNodes[0]]
-    initSidebar()
-  })
-})
 
 function handleCancel() {
   bus.emit('sidebarVisibleChange', false)
 }
 
-function handleNodeFillChange(val: string) {
-  style.value.fillColor = val;
-  (activeNodes.value[0] as Node).setStyle('fillColor', val)
-}
+const {
+  style,
+  isFillTransparent,
+  isBorderTransparent,
+  activeNodes,
+  handleNodeFillChange,
+  handleBorderColorChange,
+  handleLineColorChange,
+  handleFontColorChange,
+  handleFontWeight,
+  handleFontStyle,
+  handleTextDecoration,
+  handleBorderWidthChange,
+  handleLineWidthChange,
+  handleLineStyleChange,
+  handleFontSizeChange,
+  handleTextAlignChange
+} = useEditNode()
 
-function handleBorderColorChange(val: string) {
-  style.value.borderColor = val;
-  (activeNodes.value[0] as Node).setStyle('borderColor', val)
-}
-
-function handleLineColorChange(val: any) {
-  if (val === 'transparent') return
-  style.value.lineColor = val;
-  (activeNodes.value[0] as Node).setStyle('lineColor', val)
-}
-
-function handleFontColorChange(val: any) {
-  if (val === 'transparent') return
-  style.value.color = val;
-  (activeNodes.value[0] as Node).setStyle('color', val)
-}
-
-function handleFontWeight(val: any) {
-  let _val
-  if (val) {
-    _val = 'bold'
-  } else {
-    _val = 'normal'
-  }
-  activeNodes.value[0].setStyle('fontWeight', _val)
-}
-
-function handleFontStyle(val: any) {
-  let _val
-  if (val) {
-    _val = 'italic'
-  } else {
-    _val = 'normal'
-  }
-  activeNodes.value[0].setStyle('fontStyle', _val)
-}
-
-function handleTextDecoration() {
-  let val = ''
-  const { textLineThrough, textUnderline } = style.value
-  if (textUnderline && !textLineThrough) {
-    val = 'underline'
-  } else if (!textUnderline && textLineThrough) {
-    val = 'line-through'
-  } else if (textUnderline && textLineThrough) {
-    val = 'underline line-through'
-  }
-
-  activeNodes.value[0].setStyle('textDecoration', val)
-}
-
-function initSidebar() {
-  ['fontSize',
-    'fillColor',
-    'borderColor',
-    'lineColor',
-    'color',
-    'borderWidth',
-    'lineStyle',
-    'shape',
-    'lineWidth',
-    'textAlign'
-  ]
-  .forEach((prop) => {
-      style.value[prop] = (activeNodes.value[0] as Node).getStyle(prop)
-    })
-
-  if(!['left','right','center','justify'].includes(style.value.textAlign)){
-    style.value.textAlign = 'left'
-  }
-  style.value.textLineThrough = false
-  style.value.textUnderline = false
-  style.value.fontWeight = false
-  style.value.fontStyle = false;
-
-  ['fontStyle', 'fontWeight', 'textDecoration'].forEach((prop) => {
-    const val = (activeNodes.value[0] as Node).getStyle(prop)
-    if (prop === 'fontWeight' && val === 'bold') {
-      style.value.fontWeight = true
-    } else if (prop === 'fontStyle' && val === 'italic') {
-      style.value.fontStyle = true
-    } else if (prop === 'textDecoration' && val === 'underline') {
-      style.value.textUnderline = true
-    } else if (prop === 'textDecoration' && val === 'line-through') {
-      style.value.textLineThrough = true
-    } else if (prop === 'textDecoration' && val.split(' ').length === 2) {
-      style.value.textLineThrough = true
-      style.value.textUnderline = true
-    }
-  })
-}
 </script>
 
 <template>
@@ -220,11 +119,13 @@ function initSidebar() {
                     <div class="h-full" :style="{ backgroundColor: style.fillColor }"></div>
                   </div>
                   <div v-else class="w22 h8 rd border cursor-pointer">
-                    <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg" class="larkui-popover-trigger">
+                    <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg"
+                      class="larkui-popover-trigger">
                       <path d="M0 30L86 0" stroke="#D0021B" fill="none" fill-rule="evenodd" stroke-linecap="square">
                       </path>
                     </svg>
                   </div>
+
                   <template #content>
                     <color-picker @color-select-change="handleNodeFillChange"></color-picker>
                   </template>
@@ -238,11 +139,13 @@ function initSidebar() {
                     <div class="h-full" :style="{ backgroundColor: style.borderColor }"></div>
                   </div>
                   <div v-else class="w22 h8 rd border cursor-pointer">
-                    <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg" class="larkui-popover-trigger">
+                    <svg width="90" viewBox="0 0 90 32" xmlns="http://www.w3.org/2000/svg"
+                      class="larkui-popover-trigger">
                       <path d="M0 30L86 0" stroke="#D0021B" fill="none" fill-rule="evenodd" stroke-linecap="square">
                       </path>
                     </svg>
                   </div>
+
                   <template #content>
                     <color-picker @color-select-change="handleBorderColorChange"></color-picker>
                   </template>
@@ -252,7 +155,7 @@ function initSidebar() {
                 <span>边框粗细</span>
                 <div class="w22 h8 rd border ">
                   <a-input-number class="h-full w-full bg-white" :min="1" :max="5" v-model="style.borderWidth"
-                    @change="activeNodes[0].setStyle('borderWidth', style.borderWidth)" />
+                    @change="handleBorderWidthChange" />
                 </div>
               </div>
               <div>
@@ -272,6 +175,7 @@ function initSidebar() {
                       </path>
                     </svg>
                   </div>
+
                   <template #content>
                     <color-picker @color-select-change="handleLineColorChange"></color-picker>
                   </template>
@@ -282,13 +186,13 @@ function initSidebar() {
                 <span>分支粗细</span>
                 <div class="w22 h8 rd border ">
                   <a-input-number :default-value="2" class="h-full w-full bg-white" :min="1" :max="5"
-                    v-model="style.lineWidth" @change="activeNodes[0].setStyle('lineWidth', style.lineWidth)" />
+                    v-model="style.lineWidth" @change="handleLineWidthChange" />
                 </div>
               </div>
               <div class="flex justify-between flex-items-center mb">
                 <span>分支类型</span>
                 <a-radio-group type="button" size="large" class="w22 h8 border rd" v-model="style.lineStyle"
-                  @change="activeNodes[0].setStyle('lineStyle', style.lineStyle)">
+                  @change="handleLineStyleChange">
                   <a-radio value="curve" class="branch">
                     <div class="h6 flex flex-items-center">
                       <icon-font type="icon-siweidaotu1" :size="18"></icon-font>
@@ -313,10 +217,12 @@ function initSidebar() {
       </a-tab-pane>
 
       <a-tab-pane key="2">
+
         <template #title>文本</template>
         <div style="margin-left: 20px; margin-right: 18px;">
           <div class="mb5 flex justify-around">
             <a-checkbox v-model="style.fontWeight" @change="handleFontWeight">
+
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
                   <icon-bold class="w4.5 h4.5 icon-black" />
@@ -324,6 +230,7 @@ function initSidebar() {
               </template>
             </a-checkbox>
             <a-checkbox v-model="style.fontStyle" @change="handleFontStyle">
+
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
                   <icon-italic class="w4.5 h4.5 icon-black" />
@@ -331,6 +238,7 @@ function initSidebar() {
               </template>
             </a-checkbox>
             <a-checkbox v-model="style.textUnderline" @change="handleTextDecoration">
+
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
                   <icon-strikethrough class="w4.5 h4.5 icon-black" />
@@ -338,6 +246,7 @@ function initSidebar() {
               </template>
             </a-checkbox>
             <a-checkbox v-model="style.textLineThrough" @change="handleTextDecoration">
+
               <template #checkbox="{ checked }">
                 <a-tag :checked="checked" checkable color="arcoblue">
                   <icon-underline class="w4.5 h4.5 icon-black" />
@@ -349,7 +258,7 @@ function initSidebar() {
           <div class="flex justify-between flex-items-center mb">
             <span>字号</span>
             <a-select class="w22 h8" v-model="style.fontSize" :trigger-props="{ autoFitPopupMinWidth: true }"
-              @change="activeNodes[0].setStyle('fontSize', style.fontSize)">
+              @change="handleFontSizeChange">
               <a-option v-for="(item, idx) in fontSizeList" :key="idx" :label="item.label" :value="item.value" />
             </a-select>
           </div>
@@ -359,6 +268,7 @@ function initSidebar() {
               <div class="w22 h8 rd border p1 cursor-pointer">
                 <div class="h-full" :style="{ backgroundColor: style.color }"></div>
               </div>
+
               <template #content>
                 <color-picker @color-select-change="handleFontColorChange"></color-picker>
               </template>
@@ -368,11 +278,12 @@ function initSidebar() {
 
         <a-collapse :default-active-key="[1, 2]" :bordered="false">
           <a-collapse-item header="对齐方式" :style="customStyle" :key="1">
-            <a-radio-group type="button" size="large" class="mb flex rd border" v-model="style.textAlign" @change="activeNodes[0].setStyle('textAlign',style.textAlign)">
+            <a-radio-group type="button" size="large" class="mb flex rd border" v-model="style.textAlign"
+              @change="handleTextAlignChange">
               <a-radio value="left">
                 <icon-align-left class="w4 h4 icon-black " />
               </a-radio>
-              <a-radio value="center" >
+              <a-radio value="center">
                 <icon-align-center class="w4 h4 icon-black " />
               </a-radio>
               <a-radio value="right">
@@ -387,6 +298,7 @@ function initSidebar() {
           <a-collapse-item header="链接" :style="customStyle" :key="2">
             <a-popover trigger="click" :arrow-style="{ width: 0 }" :popup-style="{ top: '200px', left: '200px' }">
               <a-button class="rd block">添加链接</a-button>
+
               <template #content>
                 <add-link></add-link>
               </template>

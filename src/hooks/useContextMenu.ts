@@ -1,8 +1,8 @@
 import { h, render } from 'vue'
-import ContextMenu from './ContextMenu.vue'
+import ContextMenu from '@/components/ContextMenu.vue'
 import { MenuListItem } from '@/pages/edit/index.vue'
 
-export function openContextMenu() {
+export function useContextMenu() {
   let isShow = false
   const div = document.createElement('div')
   div.style.position = 'absolute'

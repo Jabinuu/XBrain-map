@@ -10,7 +10,7 @@ import Node from '^/src/node/Node';
 import bus from '@/utils/bus';
 import Sidebar from './components/sidebar/Sidebar.vue';
 import AddLink from '@/components/AddLink.vue';
-import { openContextMenu } from '@/components/ContextMenu';
+import { useContextMenu } from '@/hooks/useContextMenu';
 
 export interface MenuListItem {
   text: string
@@ -25,7 +25,7 @@ let brainMap: BrainMap
 let showNodeToolbar = ref(false)
 const brainMapContainer = ref()
 const mainContainer = ref()
-const eventList = ['node_active', 'clear_active', '_contextmenu', 'draw_mousedown','node_mousedown']
+const eventList = ['node_active', 'clear_active', '_contextmenu', 'draw_mousedown', 'node_mousedown']
 const showSidebar = ref(false)
 const showAddLink = ref(false)
 
@@ -33,7 +33,7 @@ provide('_showSidebar', showSidebar)
 onMounted(() => {
   init()
   bindEvent()
-  useContextMenu()
+  openContextMenu()
 })
 
 // 初始化编辑层
@@ -47,7 +47,7 @@ function init() {
         lineStyle: 'curve',
       }
     })
-    BrainMap.usePlugin('Select',brainMap)
+    BrainMap.usePlugin('Select', brainMap)
   }
 
   // 转发事件
@@ -58,7 +58,7 @@ function init() {
   })
 }
 
-function bindEvent() {  
+function bindEvent() {
   bus.on('sidebarVisibleChange', (e: any) => {
     if (!e) {
       brainMapContainer.value.style.marginRight = 0
@@ -79,20 +79,28 @@ function bindEvent() {
     showSidebar.value = e
   })
 
-  bus?.on('node_active', (manipulateNodes: any) => {
+  bus?.on('node_active', () => {
+    // 激活节点时显示编辑工具栏
     showNodeToolbar.value = true
     nextTick(() => {
-      const node: Node = [...manipulateNodes[0]][0]
       const _nodeToolbar = document.getElementById('node-toolbar-wrap')
 
       if (_nodeToolbar) {
-        const toolbarWidth = _nodeToolbar.clientWidth
-        const toolbarHeight = _nodeToolbar.clientHeight
-        _nodeToolbar.style.left = (node.left - (Math.abs(node.width - toolbarWidth) / 2)) + 'px'
-        _nodeToolbar.style.top = (node.top - toolbarHeight) + 'px'
+        const nodeDom = document.querySelector('.bm-node.active')
+        if (nodeDom) {
+          const rect = nodeDom.getBoundingClientRect()
+          const { left, top, width } = rect
+
+          const toolbarWidth = _nodeToolbar.clientWidth
+          const toolbarHeight = _nodeToolbar.clientHeight
+          _nodeToolbar.style.left = (left - (Math.abs(width - toolbarWidth) >> 1)) + 'px'
+          _nodeToolbar.style.top = (top - toolbarHeight) + 'px'
+        }
       }
     })
   })
+
+
 
   bus.on('clear_active', () => {
     showNodeToolbar.value = false
@@ -103,7 +111,7 @@ function bindEvent() {
   })
 }
 
-function useContextMenu() {
+function openContextMenu() {
   const drawMenuList: MenuListItem[] = [{
     text: '回到根节点',
     key: 'backToRoot',
@@ -199,16 +207,16 @@ function useContextMenu() {
     },
   }]
 
-  const { show, hide } = openContextMenu()
+  const { show, hide } = useContextMenu()
   bus.on('_contextmenu', (e: any) => {
     const menuList = e.currentTarget.classList.contains('bm-node') ? nodeMenuList : drawMenuList
     show(menuList, e.clientX, e.clientY)
   })
-  window.addEventListener('mousedown',()=>{
+  window.addEventListener('mousedown', () => {
     hide()
   })
 
-  bus.on('node_mousedown',()=>{
+  bus.on('node_mousedown', () => {
     hide()
   })
 }
@@ -223,9 +231,9 @@ function useContextMenu() {
     </div>
     <group-prompt></group-prompt>
     <div id="brainMapContainer" ref="brainMapContainer" />
-    <node-toolbar v-if="showNodeToolbar && !showSidebar"></node-toolbar>
+    <node-toolbar v-show="showNodeToolbar && !showSidebar"></node-toolbar>
   </div>
-  <Sidebar v-show="showSidebar" class="absolute right-0" ></Sidebar>
+  <Sidebar v-show="showSidebar" class="absolute right-0"></Sidebar>
   <add-link v-if="showAddLink"></add-link>
 </template>
 
@@ -250,8 +258,6 @@ function useContextMenu() {
   padding-left: 30px;
   padding-right: 30px;
 }
-
-
 
 :deep(.icon) {
   width: 18px;
