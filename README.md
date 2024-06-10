@@ -1,88 +1,75 @@
-<p align='center'>
-  <img src='https://user-images.githubusercontent.com/11247099/111864893-a457fd00-899e-11eb-9f05-f4b88987541d.png' alt='Vitesse - Opinionated Vite Starter Template' width='600'/>
-</p>
+<h1 style="text-align: center;">
+  XbrainMap
+</h1>
 
-<h6 align='center'>
-<a href="https://vitesse-lite.netlify.app/">Live Demo</a>
-</h6>
+[![npm-version](https://img.shields.io/npm/v/brain-map)](https://www.npmjs.com/package/brain-map)
+![npm download](https://img.shields.io/npm/dm/brain-map)
+![license](https://img.shields.io/npm/l/express.svg)
+[![GitHub stars](https://img.shields.io/github/stars/Jabinuu/brain-map)](https://github.com/wanglin2/mind-map/stargazers)
 
-<h5 align='center'>
-<b>Lightweight version of <a href="https://github.com/antfu/vitesse">Vitesse</a></b>
-</h5>
+> 一个简约而强大的 Web 思维导图应用
 
-<br>
+本项目作为一个思维导图应用程序，其内核依赖于另一个项目 —— [brainmap sdk]('https://github.com/Jabinuu/brain-map')。这是一套用 TypeScript 所创造的一个用于思维导图实现的SDK，有了它的帮助，任何开发者都可以实现一个属于自己的思维导图类应用，听起来是不是很酷？而本项目就是其中之一！
 
-<p align='center'>
-<b>English</b> | <a href="https://github.com/antfu/vitesse-lite/blob/main/README.zh-CN.md">简体中文</a>
-<!-- Contributors: Thanks for geting interested, however we DON'T accept new transitions to the README, thanks. -->
-</p>
+This project is a mind mapping application, and its core relies on another project — the brainmap SDK. This is an SDK created with TypeScript for implementing mind maps. With its help, any developer can create their own mind mapping application. Sounds cool, right? And this project is one of them!
 
-## Features
+## Features 特性
 
-- ⚡️ [Vue 3](https://github.com/vuejs/core), [Vite 3](https://github.com/vitejs/vite), [pnpm](https://pnpm.io/), [ESBuild](https://github.com/evanw/esbuild) - born with fastness
+- [x] 支持思维导图常用的逻辑结构布局
+- [x] 内置多种主题，支持在主题基础之上自定义思维导图的所有样式
+- [x] 节点内容支持文本内容
+- [x] 节点尺寸可通过精灵点进行自定义
+- [x] 支持画布的拖动、缩放
+- [x] 支持多选节点
+- [x] 所有操作都支持快捷键
+- [x] 支持历史记录，能够进行操作的回退和重做
+- [x] 支持节点的展开、收起，以及一键整理布局
+- [x] 插件化架构，所有非核心功能以插件的形式提供
+- [x] 支持本地存储
+> 
+- [x] Supports common logical structure layouts for mind maps
+- [x] Built-in multiple themes, with support for customizing all styles of the mind map based on these themes
+- [x] Node content supports text content
+- [x] Node size can be customized via control points
+- [x] Supports canvas dragging and zooming
+- [x] Supports multi-node selection
+- [x] All operations support keyboard shortcuts
+- [x] Supports history records, allowing undo and redo operations
+- [x] Supports expanding and collapsing nodes, as well as one-click layout organization
+- [x] Plugin architecture, with all non-core functionalities provided as plugins
+- [x] Supports local storage
 
-- 🗂 [File based routing](./src/pages)
+## Usage 用法
+为了确保本项目能在您的环境中顺利运行，建议您所使用的包管理工具为pnpm@8.10.5
 
-- 📦 [Components auto importing](./src/components)
-
-- 🎨 [UnoCSS](https://github.com/antfu/unocss) - The instant on-demand atomic CSS engine.
-
-- 😃 Use icons from any icon sets in [Pure CSS](https://github.com/antfu/unocss/tree/main/packages/preset-icons)
-
-- 🔥 Use the [new `<script setup>` style](https://github.com/vuejs/rfcs/pull/227)
-
-- ✅ Use [Vitest](http://vitest.dev/) for unit and components testing
-
-- 🦾 TypeScript, of course
-
-- ☁️ Deploy on Netlify, zero-config
-
-
-<br>
-
-See [Vitesse](https://github.com/antfu/vitesse) for full featureset.
-
-
-## Dropped Features from [Vitesse](https://github.com/antfu/vitesse)
-
-- ~~i18n~~
-- ~~Layouts~~
-- ~~SSG~~
-- ~~PWA~~
-- ~~Markdown~~
-
-## Pre-packed
-
-### UI Frameworks
-
-- [UnoCSS](https://github.com/antfu/unocss) - The instant on-demand atomic CSS engine.
-
-### Icons
-
-- [Iconify](https://iconify.design) - use icons from any icon sets [🔍Icônes](https://icones.netlify.app/)
-- [Pure CSS Icons via UnoCSS](https://github.com/antfu/unocss/tree/main/packages/preset-icons)
-
-### Plugins
-
-- [Vue Router](https://github.com/vuejs/vue-router)
-  - [`unplugin-vue-router`](https://github.com/posva/unplugin-vue-router) - file system based routing
-- [`unplugin-auto-import`](https://github.com/antfu/unplugin-auto-import) - Directly use Vue Composition API and others without importing
-- [`unplugin-vue-components`](https://github.com/antfu/unplugin-vue-components) - components auto import
-- [`unplugin-vue-macros`](https://github.com/sxzz/unplugin-vue-macros) - Explore and extend more macros and syntax sugar to Vue.
-- [VueUse](https://github.com/antfu/vueuse) - collection of useful composition APIs
-
-## Try it now!
-
-### GitHub Template
-
-[Create a repo from this template on GitHub](https://github.com/antfu/vitesse-lite/generate).
-
-### Clone to local
-
-If you prefer to do it manually with the cleaner git history
-
-```bash
-npx degit antfu/vitesse-lite my-vitesse-app
-cd my-vitesse-app
-pnpm i # If you don't have pnpm installed, run: npm install -g pnpm
+To ensure that this project runs smoothly in your environment, it is recommended that you use the package manager pnpm@8.10.5.
 ```
+npm i -g pnpm@8.10.5
+```
+### Installation 安装
+安装必要的依赖
+
+Install the necessary dependencies
+``` bash
+pnpm i
+```
+### Run it 运行
+```
+pnpm run dev
+```
+
+## Demo 展示
+![](https://pic.imgdb.cn/item/6666d7375e6d1bfa05349586.png)
+![](https://pic.imgdb.cn/item/6666d6c95e6d1bfa053431ec.png)
+![](https://pic.imgdb.cn/item/6666d6ef5e6d1bfa053459ab.png)
+![](https://pic.imgdb.cn/item/6666d6f05e6d1bfa053459e5.png)
+![](https://pic.imgdb.cn/item/6666d6f05e6d1bfa05345a2b.png)
+![](https://pic.imgdb.cn/item/6666d6f05e6d1bfa05345a8a.png)
+![](https://pic.imgdb.cn/item/6666d6f05e6d1bfa05345ac8.png)
+![](https://pic.imgdb.cn/item/6666d7365e6d1bfa053494fb.png)
+![](https://pic.imgdb.cn/item/6666d7375e6d1bfa05349553.png)
+
+## Thanks 感谢
+感谢[@wanglin2]('https://github.com/wanglin2')的启发
+
+Thanks to @wanglin2 for the inspiration
