@@ -38,5 +38,6 @@ module.exports = {
         "vue/multi-word-component-names": ["error", {
             "ignores": ["index","Sidebar"]
           }]
-    }
+    },
+    "ignorePatterns": ['README.md']
 }
