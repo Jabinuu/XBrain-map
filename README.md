@@ -1,6 +1,4 @@
-<h1 style="text-align: center;">
-  XbrainMap
-</h1>
+<h1 align="center">XbrainMap</h1>
 
 [![npm-version](https://img.shields.io/npm/v/brain-map)](https://www.npmjs.com/package/brain-map)
 ![npm download](https://img.shields.io/npm/dm/brain-map)
@@ -9,7 +7,7 @@
 
 > 一个简约而强大的 Web 思维导图应用
 
-本项目作为一个思维导图应用程序，其内核依赖于另一个项目 —— [brainmap sdk]('https://github.com/Jabinuu/brain-map')。这是一套用 TypeScript 所创造的一个用于思维导图实现的SDK，有了它的帮助，任何开发者都可以实现一个属于自己的思维导图类应用，听起来是不是很酷？而本项目就是其中之一！
+本项目作为一个思维导图应用程序，其内核依赖于另一个项目 —— [brainmap sdk](https://github.com/Jabinuu/brain-map)。这是一套用 TypeScript 所创造的一个用于思维导图实现的SDK，有了它的帮助，任何开发者都可以实现一个属于自己的思维导图类应用，听起来是不是很酷？而本项目就是其中之一！
 
 This project is a mind mapping application, and its core relies on another project — the brainmap SDK. This is an SDK created with TypeScript for implementing mind maps. With its help, any developer can create their own mind mapping application. Sounds cool, right? And this project is one of them!
 
