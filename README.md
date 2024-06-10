@@ -11,6 +11,8 @@
 
 This project is a mind mapping application, and its core relies on another project — the brainmap SDK. This is an SDK created with TypeScript for implementing mind maps. With its help, any developer can create their own mind mapping application. Sounds cool, right? And this project is one of them!
 
+体验地址：[https://xbrainmap.vercel.app/#/](https://xbrainmap.vercel.app/#/)
+
 ## Features 特性
 
 - [x] 支持思维导图常用的逻辑结构布局
